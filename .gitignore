@@ -1,0 +1,5 @@
+node_modules/
+servidor/.env
+servidor/uploads/
+servidor/spa.traineddata
+*.log

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Admin Deseo un Premio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/admin/admin.css">
+</head>
+<body class="dashboard-page">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <a class="sidebar-brand" href="/index.html" style="text-decoration:none;color:inherit">
+      <img src="/assets/logo.png" alt="Deseo un Premio" width="40" height="40" class="sidebar-logo-img">
+      <div>
+        <div class="sb-title">Deseo un Premio</div>
+        <div class="sb-sub">Panel Admin</div>
+      </div>
+    </a>
+
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active" data-section="dashboard" onclick="showSection('dashboard')">
+        <span class="nav-icon">📊</span> Dashboard
+      </a>
+      <a href="#" class="nav-item" data-section="comprobantes" onclick="showSection('comprobantes')">
+        <span class="nav-icon">📋</span> Comprobantes
+        <span class="badge" id="badge-pend">0</span>
+      </a>
+      <a href="#" class="nav-item" data-section="participantes" onclick="showSection('participantes')">
+        <span class="nav-icon">👥</span> Participantes
+      </a>
+      <a href="#" class="nav-item" data-section="sorteos" onclick="showSection('sorteos')">
+        <span class="nav-icon">🎰</span> Sorteos
+      </a>
+      <a href="#" class="nav-item" data-section="compradores" onclick="showSection('compradores')">
+        <span class="nav-icon">🛍️</span> Compradores
+      </a>
+      <a href="#" class="nav-item" data-section="estadisticas" onclick="showSection('estadisticas')">
+        <span class="nav-icon">📈</span> Estadísticas
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="/index.html" class="nav-item" target="_blank">
+        <span class="nav-icon">🌐</span> Ver sitio
+      </a>
+      <a href="#" class="nav-item logout" onclick="logout()">
+        <span class="nav-icon">🚪</span> Cerrar sesión
+      </a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main-admin">
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <button class="btn-menu" onclick="toggleSidebar()">☰</button>
+      <h1 class="topbar-title" id="topbar-title">Dashboard</h1>
+      <div class="topbar-right">
+        <span class="admin-badge">👤 Admin</span>
+      </div>
+    </header>
+
+    <!-- ══ DASHBOARD ══════════════════════════════════════════ -->
+    <section class="section active" id="sec-dashboard">
+      <div class="section-header">
+        <h2>Resumen general</h2>
+        <span class="section-date" id="fecha-hoy"></span>
+      </div>
+
+      <!-- KPIs -->
+      <div class="kpi-grid">
+        <div class="kpi-card blue">
+          <div class="kpi-icon">🎫</div>
+          <div class="kpi-val" id="kpi-tickets">0</div>
+          <div class="kpi-label">Tickets vendidos</div>
+        </div>
+        <div class="kpi-card grana">
+          <div class="kpi-icon">⏳</div>
+          <div class="kpi-val" id="kpi-pend">0</div>
+          <div class="kpi-label">Pendientes validar</div>
+        </div>
+        <div class="kpi-card green">
+          <div class="kpi-icon">✅</div>
+          <div class="kpi-val" id="kpi-aprobados">0</div>
+          <div class="kpi-label">Aprobados</div>
+        </div>
+        <div class="kpi-card gold">
+          <div class="kpi-icon">💰</div>
+          <div class="kpi-val" id="kpi-recaudado">S/ 0</div>
+          <div class="kpi-label">Recaudado</div>
+        </div>
+      </div>
+
+      <!-- Últimos comprobantes -->
+      <div class="card mt24">
+        <div class="card-header">
+          <h3>Últimos comprobantes</h3>
+          <button class="btn-sm" onclick="showSection('comprobantes')">Ver todos →</button>
+        </div>
+        <div class="table-wrap">
+          <table class="admin-table" id="tabla-recientes">
+            <thead>
+              <tr>
+                <th>DNI</th>
+                <th>Nombre</th>
+                <th>Tickets</th>
+                <th>Monto</th>
+                <th>Sorteo</th>
+                <th>Estado</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-recientes"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ COMPROBANTES ══════════════════════════════════════ -->
+    <section class="section" id="sec-comprobantes">
+      <div class="section-header">
+        <h2>Comprobantes</h2>
+        <div class="filter-row">
+          <select class="select-filter" id="filtro-estado" onchange="filtrarComprobantes()">
+            <option value="todos">Todos</option>
+            <option value="pendiente">Pendientes</option>
+            <option value="aprobado">Aprobados</option>
+            <option value="rechazado">Rechazados</option>
+          </select>
+          <input type="text" class="search-input" id="search-comp"
+            placeholder="Buscar por DNI o nombre..." oninput="filtrarComprobantes()"/>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>DNI</th>
+                <th>Nombre</th>
+                <th>WhatsApp</th>
+                <th>Tickets</th>
+                <th>Monto</th>
+                <th>Sorteo</th>
+                <th>Código</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-comprobantes"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ PARTICIPANTES ══════════════════════════════════════ -->
+    <section class="section" id="sec-participantes">
+      <div class="section-header">
+        <h2>Participantes</h2>
+        <input type="text" class="search-input" id="search-part"
+          placeholder="Buscar por DNI o nombre..." oninput="filtrarParticipantes()"/>
+      </div>
+
+      <div class="card">
+        <div class="table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>DNI</th>
+                <th>Nombre completo</th>
+                <th>WhatsApp</th>
+                <th>Total tickets</th>
+                <th>Total pagado</th>
+                <th>Sorteos</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-participantes"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ SORTEOS ════════════════════════════════════════════ -->
+    <section class="section" id="sec-sorteos">
+      <div class="section-header">
+        <h2>Sorteos</h2>
+        <button class="btn-primary" onclick="abrirModalSorteo()">+ Nuevo sorteo</button>
+      </div>
+
+      <div class="sorteos-admin-grid" id="sorteos-grid"></div>
+    </section>
+
+    <!-- ══ COMPRADORES ════════════════════════════════════════ -->
+    <section class="section" id="sec-compradores">
+      <div class="section-header">
+        <h2>Compradores por sorteo</h2>
+        <div class="filter-row">
+          <select class="select-filter" id="comprador-sorteo-select" onchange="renderCompradores()">
+            <option value="">Selecciona un sorteo…</option>
+          </select>
+          <input type="text" class="search-input" id="search-comprador"
+            placeholder="Buscar por DNI o nombre..." oninput="renderCompradores()"/>
+          <button class="btn-secondary" onclick="descargarCompradoresExcel()">📥 Descargar Excel</button>
+          <button class="btn-primary" onclick="abrirModalRuleta()">🎡 Jugar a la ruleta</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>DNI</th>
+                <th>Nombre</th>
+                <th>WhatsApp</th>
+                <th>Tickets</th>
+                <th>Monto pagado</th>
+                <th>Última compra</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-compradores"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ ESTADÍSTICAS ═══════════════════════════════════════ -->
+    <section class="section" id="sec-estadisticas">
+      <div class="section-header">
+        <h2>Estadísticas</h2>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-card blue">
+          <div class="kpi-icon">📅</div>
+          <div class="kpi-val" id="est-hoy">0</div>
+          <div class="kpi-label">Registros hoy</div>
+        </div>
+        <div class="kpi-card green">
+          <div class="kpi-icon">🏆</div>
+          <div class="kpi-val" id="est-sorteos">0</div>
+          <div class="kpi-label">Sorteos activos</div>
+        </div>
+        <div class="kpi-card gold">
+          <div class="kpi-icon">📊</div>
+          <div class="kpi-val" id="est-conv">0%</div>
+          <div class="kpi-label">Tasa de aprobación</div>
+        </div>
+        <div class="kpi-card grana">
+          <div class="kpi-icon">💸</div>
+          <div class="kpi-val" id="est-total">S/ 0</div>
+          <div class="kpi-label">Total recaudado</div>
+        </div>
+      </div>
+
+      <!-- Barras por sorteo -->
+      <div class="card mt24">
+        <div class="card-header"><h3>Tickets por sorteo</h3></div>
+        <div id="chart-sorteos" class="chart-wrap"></div>
+      </div>
+
+      <!-- Últimos 7 días -->
+      <div class="card mt16">
+        <div class="card-header"><h3>Registros últimos 7 días</h3></div>
+        <div id="chart-dias" class="chart-wrap"></div>
+      </div>
+    </section>
+
+  </div><!-- /main-admin -->
+
+  <!-- MODAL COMPROBANTE -->
+  <div class="modal-overlay" id="modal-comp" style="display:none" onclick="cerrarModal('modal-comp')">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3 id="modal-comp-title">Comprobante</h3>
+        <button class="modal-close" onclick="cerrarModal('modal-comp')">✕</button>
+      </div>
+      <div id="modal-comp-body"></div>
+      <div class="modal-footer" id="modal-comp-footer"></div>
+    </div>
+  </div>
+
+  <!-- MODAL SORTEO -->
+  <div class="modal-overlay" id="modal-sorteo" style="display:none" onclick="cerrarModal('modal-sorteo')">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3 id="modal-sorteo-titulo">Nuevo Sorteo</h3>
+        <button class="modal-close" onclick="cerrarModal('modal-sorteo')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="field-group">
+          <label class="field-label">Nombre del sorteo</label>
+          <input type="text" id="s-nombre" class="login-input" placeholder="Ej: Sorteo de Vehículos"/>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Fecha del sorteo</label>
+          <input type="date" id="s-fecha" class="login-input"/>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Hora</label>
+          <input type="time" id="s-hora" class="login-input" value="16:00"/>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Precio por ticket (S/.)</label>
+          <input type="number" id="s-precio" class="login-input" placeholder="60" min="1"/>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Premios (1 a 10)</label>
+          <div id="premios-lista"></div>
+          <button type="button" class="btn-secondary" id="btn-agregar-premio" onclick="agregarCampoPremio()" style="margin-top:4px">+ Agregar premio</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="cerrarModal('modal-sorteo')">Cancelar</button>
+        <button class="btn-primary" id="btn-guardar-sorteo" onclick="guardarSorteo()">Crear sorteo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL RULETA -->
+  <div class="modal-overlay" id="modal-ruleta" style="display:none">
+    <div class="modal-card" style="max-width:420px" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3>🎡 Ruleta de sorteo</h3>
+        <button class="modal-close" onclick="cerrarModal('modal-ruleta')">✕</button>
+      </div>
+      <div class="modal-body" style="text-align:center">
+        <div id="ruleta-premio-actual" style="font-weight:700;margin-bottom:14px"></div>
+        <div style="position:relative;width:300px;height:300px;margin:0 auto">
+          <div style="position:absolute;top:-4px;left:50%;transform:translateX(-50%);font-size:26px;z-index:2;line-height:1">🔻</div>
+          <canvas id="ruleta-canvas" width="300" height="300" style="border-radius:50%;box-shadow:0 8px 24px rgba(0,0,0,.25);display:block"></canvas>
+        </div>
+        <div id="ruleta-resultado" style="margin-top:16px;font-size:16px;font-weight:600;min-height:24px"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="cerrarModal('modal-ruleta')">Cerrar</button>
+        <button class="btn-primary" id="btn-girar-ruleta" onclick="girarRuleta()">🎡 Girar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="/config.js"></script>
+  <script src="/admin/admin.js"></script>
+</body>
+</html>

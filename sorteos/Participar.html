@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Participar — Deseo un Premio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="participar.css">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <div class="mascot-mini">
+        <img src="assets/logo.png" alt="Deseo un Premio" width="44" height="44" class="mascot-logo-img">
+      </div>
+      <div>
+        <div class="brand-name">Deseo un Premio</div>
+        <div class="brand-tagline">¡Tu deseo está a un ticket de distancia!</div>
+      </div>
+    </div>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">Sorteos</a>
+      <a href="mis-tickets.html" class="nav-link">Mis Tickets</a>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main-content">
+    <div class="container">
+
+      <!-- VOLVER -->
+      <a href="index.html" class="btn-volver">← Volver</a>
+
+      <!-- PROGRESS BAR -->
+      <div class="progress-bar">
+        <div class="progress-step active" id="prog1"></div>
+        <div class="progress-step" id="prog2"></div>
+        <div class="progress-step" id="prog3"></div>
+      </div>
+      <div class="progress-label" id="progress-label">Paso 1 de 3 — <strong>Tus datos</strong></div>
+
+      <!-- Sorteo elegido (según la tarjeta desde la que se dio clic en "Participar") -->
+      <div class="detalle-row" style="background:#F1F5F9;border-radius:10px;padding:10px 14px;margin-bottom:16px">
+        <span>Estás participando en</span>
+        <strong id="sorteo-actual-nombre">Cargando…</strong>
+      </div>
+
+      <!-- ══ PASO 1: TUS DATOS ══════════════════════════════════ -->
+      <div class="form-card" id="paso1">
+
+        <!-- Tipo de documento -->
+        <div class="field-group">
+          <label class="field-label">Tipo de documento</label>
+          <div class="doc-type-btns">
+            <button class="doc-type-btn active" id="btn-dni" onclick="setDocType('dni')">DNI</button>
+            <button class="doc-type-btn" id="btn-ext" onclick="setDocType('ext')">C. de extranjería</button>
+          </div>
+        </div>
+
+        <!-- Número de documento -->
+        <div class="field-group">
+          <label class="field-label" id="doc-label">Número de DNI</label>
+          <input
+            type="text"
+            id="doc-input"
+            class="input-grande"
+            placeholder="0 0 0 0 0 0 0 0"
+            maxlength="8"
+            inputmode="numeric"
+          />
+        </div>
+
+        <!-- Mensaje DNI -->
+        <div id="dni-msg" class="dni-msg"></div>
+
+        <!-- Nombres y Apellidos (aparecen tras ingresar DNI) -->
+        <div id="campos-nombres" style="display:none">
+          <div class="field-group">
+            <label class="field-label">Nombres</label>
+            <input type="text" id="input-nombres" class="input-wsp"
+              placeholder="Ingresa tus nombres" autocomplete="given-name"/>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Apellidos</label>
+            <input type="text" id="input-apellidos" class="input-wsp"
+              placeholder="Ingresa tus apellidos" autocomplete="family-name"/>
+          </div>
+        </div>
+
+        <!-- WhatsApp -->
+        <div class="field-group">
+          <label class="field-label">WhatsApp (9 dígitos)</label>
+          <input
+            type="text"
+            id="wsp-input"
+            class="input-wsp"
+            placeholder="9XXXXXXXX"
+            maxlength="9"
+            inputmode="numeric"
+          />
+        </div>
+
+        <button class="btn-continuar" onclick="irPaso2()">Continuar →</button>
+      </div>
+
+      <!-- ══ PASO 2: COMPROBANTE ════════════════════════════════ -->
+      <div class="paso2-grid" id="paso2" style="display:none">
+
+        <!-- Columna izquierda -->
+        <div class="col-izq">
+
+          <!-- Cantidad de tickets -->
+          <div class="form-card mb16">
+            <div class="field-label mb8">¿CUÁNTOS TICKETS QUIERES?</div>
+            <div class="counter-row">
+              <button class="counter-btn" onclick="cambiarCantidad(-1)">−</button>
+              <span class="counter-num" id="cantidad">1</span>
+              <button class="counter-btn" onclick="cambiarCantidad(1)">+</button>
+              <div class="total-pagar">
+                <span class="total-label">Total a pagar</span>
+                <span class="total-monto" id="total-monto">S/ 60</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Subir comprobante -->
+          <div class="form-card">
+            <div class="field-label mb8">¿YA REALIZASTE EL PAGO?</div>
+
+            <div class="upload-area" id="upload-area" onclick="triggerUpload()">
+              <input type="file" id="file-input" accept="image/*" style="display:none" onchange="archivoSeleccionado(event)"/>
+              <div id="upload-content">
+                <div class="upload-icon">📤</div>
+                <div class="upload-text">Subir comprobante</div>
+              </div>
+            </div>
+
+            <!-- Código de seguridad: normalmente se lee solo de la imagen.
+                 Este campo se muestra únicamente si no se pudo leer. -->
+            <div class="field-group" id="codigo-seguridad-group" style="display:none">
+              <label class="field-label" for="codigo-seguridad-input">Código de seguridad del comprobante</label>
+              <input
+                type="text"
+                id="codigo-seguridad-input"
+                class="input-wsp"
+                placeholder="Ej: 965"
+                maxlength="10"
+              />
+              <div id="codigo-seguridad-msg" style="font-size:12px;color:#6B7280;margin-top:4px">
+                No pudimos leerlo automáticamente de tu comprobante. Escribe el código de 3 dígitos que aparece justo debajo de la fecha (o el N° de operación si pagaste con otra app).
+              </div>
+            </div>
+
+            <!-- Fecha del comprobante: normalmente se lee sola de la imagen.
+                 Este campo se muestra únicamente si no se pudo leer. -->
+            <div class="field-group" id="fecha-comprobante-group" style="display:none">
+              <label class="field-label" for="fecha-comprobante-input">Fecha del comprobante</label>
+              <input
+                type="date"
+                id="fecha-comprobante-input"
+                class="input-wsp"
+              />
+              <div id="fecha-comprobante-msg" style="font-size:12px;color:#6B7280;margin-top:4px">
+                No pudimos leer la fecha de tu comprobante. Selecciona la fecha que aparece en la parte de arriba de tu comprobante (junto a la hora del pago).
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Columna derecha: Yape -->
+        <div class="col-der">
+          <div class="yape-card">
+            <div class="yape-eyebrow">¿AÚN NO HAS REALIZADO EL PAGO?</div>
+            <p class="yape-instruccion">Yapea <strong>S/ <span id="yape-monto">60</span></strong> al número o escanea el QR, y luego sube tu comprobante aquí arriba.</p>
+            <div class="yape-box">
+              <div class="yape-label-sm">PAGA CON YAPE</div>
+              <div class="yape-num">926 636 117</div>
+              <div class="yape-empresa">Deseo un Premio S.A.C.</div>
+              <div class="yape-qr">
+                <img src="assets/yape-qr.png" alt="Código QR Yape" width="150" height="150" class="qr-img">
+              </div>
+              <button class="btn-copiar" onclick="copiarYape()">📋 Copiar número</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ══ PASO 3: CONFIRMACIÓN ═══════════════════════════════ -->
+      <div class="form-card confirmacion" id="paso3" style="display:none">
+        <div class="confirm-icon">✅</div>
+        <h2 class="confirm-titulo">¡Comprobante enviado!</h2>
+        <p class="confirm-desc">
+          En unos minutos lo estamos validando y te confirmaremos tu ticket por WhatsApp al número <strong id="wsp-confirm"></strong>.
+        </p>
+        <div class="confirm-detalle">
+          <div class="detalle-row">
+            <span>Sorteo</span>
+            <strong id="confirm-sorteo-nombre">—</strong>
+          </div>
+          <div class="detalle-row">
+            <span>Tickets</span>
+            <strong id="confirm-tickets">1 ticket</strong>
+          </div>
+          <div class="detalle-row">
+            <span>Total pagado</span>
+            <strong id="confirm-monto">S/ 60</strong>
+          </div>
+          <div class="detalle-row">
+            <span>Participante</span>
+            <strong id="confirm-nombre"></strong>
+          </div>
+        </div>
+        <a href="mis-tickets.html" class="btn-continuar mt16">Ver mis tickets</a>
+        <a href="index.html" class="btn-volver-home">← Volver al inicio</a>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- WHATSAPP FLOTANTE -->
+  <a href="https://wa.me/51964146346" target="_blank" class="btn-whatsapp">
+    <svg viewBox="0 0 24 24" width="26" height="26" fill="white">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
+    <span>¿Consultas?</span>
+  </a>
+
+  <script src="config.js"></script>
+  <script src="participar.js"></script>
+</body>
+</html>

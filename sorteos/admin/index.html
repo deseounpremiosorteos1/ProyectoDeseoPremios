@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Deseo un Premio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/admin/admin.css">
+</head>
+<body class="login-page">
+
+  <div class="login-wrap">
+    <div class="login-logo">
+      <img src="/assets/logo.png" alt="Deseo un Premio" width="64" height="64" class="login-logo-img">
+      <div class="login-brand">Deseo un Premio</div>
+      <div class="login-sub">Panel de Administración</div>
+    </div>
+
+    <div class="login-card">
+      <h2>Iniciar sesión</h2>
+      <div id="login-error" class="login-error" style="display:none">
+        ❌ Usuario o contraseña incorrectos
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Usuario</label>
+        <input type="text" id="user-input" class="login-input" placeholder="admin"
+          onkeydown="if(event.key==='Enter')login()"/>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Contraseña</label>
+        <div class="pass-wrap">
+          <input type="password" id="pass-input" class="login-input" placeholder="••••••••"
+            onkeydown="if(event.key==='Enter')login()"/>
+          <button class="btn-eye" onclick="togglePass()" title="Mostrar/ocultar">👁</button>
+        </div>
+      </div>
+
+      <button class="btn-login" onclick="login()">Entrar al panel</button>
+    </div>
+
+    <div class="login-back">
+      <a href="/index.html">← Volver al sitio</a>
+    </div>
+  </div>
+
+  <script src="/config.js"></script>
+  <script src="/admin/admin.js"></script>
+</body>
+</html>
