@@ -4,4 +4,4 @@ const ES_LOCAL =
 
 window.API_BASE_URL = ES_LOCAL
   ? 'http://localhost:3000/api'
-  : 'https://deseo-premios-api.onrender.com/api';
+  : 'https://proyectodeseopremiosproduccion.onrender.com/api';
