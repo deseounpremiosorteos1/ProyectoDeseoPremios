@@ -2,7 +2,7 @@
 // Configuración del servidor API
 // ════════════════════════════════════════════════════════════════
 // Toma la URL configurada en config.js (window.API_BASE_URL incluye '/api' al final)
-const API_URL = (window.API_BASE_URL || 'http://localhost:3001/api').replace(/\/api\/?$/, '');
+const API_URL = (window.API_BASE_URL || 'http://localhost:3000/api').replace(/\/api\/?$/, '');
 
 // ── Estado global ─────────────────────────────────────────────
 let docTipo         = 'dni';
@@ -15,8 +15,9 @@ let enviandoComprobante = false;
 
 const PRECIO_TICKET_DEFAULT = 60;
 
-// El id del sorteo llega por la URL (?sorteo=ID) desde la tarjeta en la
-// que el usuario dio clic en "Participar →" en la página principal.
+// Si el link trae ?sorteo=<id> (por ejemplo desde una tarjeta de la
+// página principal), participamos en ESE sorteo específico. Si no viene
+// el parámetro, o no coincide con ninguno activo, usamos el primero.
 const sorteoIdDesdeUrl = new URLSearchParams(window.location.search).get('sorteo');
 
 // ── Cargar sorteos activos desde el servidor al iniciar ────────
@@ -32,17 +33,10 @@ async function cargarSorteos() {
       return;
     }
 
-    // Usamos el sorteo indicado en la URL (el que el usuario eligió en la
-    // página principal). Si no viene ninguno, o ya no está activo, caemos
-    // al primer sorteo activo disponible.
-    let elegido = null;
-    if (sorteoIdDesdeUrl) {
-      elegido = sorteosDisponibles.find(s => String(s.id) === String(sorteoIdDesdeUrl));
-      if (!elegido) {
-        mostrarErrorSorteos('Ese sorteo ya no está disponible. Te mostramos otro sorteo activo.');
-      }
-    }
-    sorteoSeleccionado = elegido || sorteosDisponibles[0];
+    const porUrl = sorteoIdDesdeUrl
+      ? sorteosDisponibles.find(s => String(s.id) === String(sorteoIdDesdeUrl))
+      : null;
+    sorteoSeleccionado = porUrl || sorteosDisponibles[0];
 
     actualizarNombreSorteo();
     actualizarMontos();
@@ -52,13 +46,14 @@ async function cargarSorteos() {
   }
 }
 
-// ── Mostrar el nombre del sorteo elegido (paso 1 y confirmación) ────
+// Muestra el nombre del sorteo elegido en la barra de arriba y en el
+// resumen de confirmación del paso 3.
 function actualizarNombreSorteo() {
-  if (!sorteoSeleccionado) return;
-  const banner = document.getElementById('sorteo-actual-nombre');
-  if (banner) banner.textContent = sorteoSeleccionado.nombre;
-  const confirm = document.getElementById('confirm-sorteo-nombre');
-  if (confirm) confirm.textContent = sorteoSeleccionado.nombre;
+  const nombre = sorteoSeleccionado ? sorteoSeleccionado.nombre : '—';
+  const elBarra   = document.getElementById('sorteo-actual-nombre');
+  const elConfirm = document.getElementById('confirm-sorteo-nombre');
+  if (elBarra)   elBarra.textContent   = nombre;
+  if (elConfirm) elConfirm.textContent = nombre;
 }
 
 function mostrarErrorSorteos(msg) {
@@ -70,6 +65,8 @@ function mostrarErrorSorteos(msg) {
     aviso.textContent = '⚠️ ' + msg;
     cont.prepend(aviso);
   }
+  const elBarra = document.getElementById('sorteo-actual-nombre');
+  if (elBarra) elBarra.textContent = 'No disponible';
 }
 
 cargarSorteos();
@@ -123,12 +120,11 @@ document.getElementById('wsp-input').addEventListener('input', function () {
   this.classList.remove('error');
 });
 
-// ── Buscar nombre por DNI (ahora contra el servidor real) ──────
+// ── Buscar nombre por DNI (contra el servidor real) ────────────
 async function buscarNombre(dni) {
   const msgEl      = document.getElementById('dni-msg');
   const camposNom  = document.getElementById('campos-nombres');
 
-  // Mostrar buscando...
   msgEl.textContent = '🔍 Verificando DNI...';
   msgEl.className   = 'dni-msg buscando';
   camposNom.style.display = 'none';
@@ -138,7 +134,6 @@ async function buscarNombre(dni) {
     const data = await resp.json();
 
     if (data.encontrado) {
-      // ✅ Encontrado — mostrar datos precargados (solo lectura)
       msgEl.textContent = '✅ DNI verificado correctamente';
       msgEl.className   = 'dni-msg encontrado';
 
@@ -153,7 +148,6 @@ async function buscarNombre(dni) {
       camposNom.style.display = 'block';
 
     } else {
-      // ❌ No encontrado — campos editables para ingresar manualmente
       msgEl.innerHTML = '⚠️ DNI no registrado en nuestra base de datos — <strong>ingresa tus datos manualmente</strong>';
       msgEl.className = 'dni-msg no-encontrado';
 
@@ -203,7 +197,6 @@ function irPaso2() {
     return;
   }
 
-  // Validar documento
   if (docTipo === 'dni' && doc.length !== 8) {
     document.getElementById('doc-input').classList.add('error');
     valido = false;
@@ -213,7 +206,6 @@ function irPaso2() {
     valido = false;
   }
 
-  // Validar nombres
   if (nomInput && !nomInput.value.trim()) {
     nomInput.classList.add('error');
     valido = false;
@@ -223,7 +215,6 @@ function irPaso2() {
     valido = false;
   }
 
-  // Armar nombre completo
   if (nomInput && apInput) {
     nombreCompleto = `${nomInput.value.trim()} ${apInput.value.trim()}`;
   }
@@ -232,7 +223,6 @@ function irPaso2() {
     valido = false;
   }
 
-  // Validar WhatsApp
   if (wsp.length !== 9) {
     document.getElementById('wsp-input').classList.add('error');
     valido = false;
@@ -240,7 +230,6 @@ function irPaso2() {
 
   if (!valido) return;
 
-  // Ir a paso 2
   document.getElementById('paso1').style.display  = 'none';
   document.getElementById('paso2').style.display  = 'grid';
 
@@ -258,48 +247,126 @@ function cambiarCantidad(delta) {
   actualizarMontos();
 }
 
-function actualizarMontos() {
+// ── Promociones por combo ──────────────────────────────────────
+// El descuento SOLO se aplica en estas 5 cantidades exactas — cualquier
+// otra cantidad (1, 2, 4, 6, 8, 11...) paga el precio normal sin
+// descuento. Es un % sobre el precio normal de ESE sorteo (cantidad ×
+// precio_ticket), no un monto fijo igual para todos los sorteos. El
+// monto final se redondea a la decena más cercana (ej: 132→130, 255→260).
+const PORCENTAJES_POR_COMBO = { 3: 11, 5: 12, 7: 13, 9: 14, 10: 15 };
+
+function porcentajeDescuentoPorCantidad(cantidad) {
+  return PORCENTAJES_POR_COMBO[cantidad] || 0;
+}
+
+// Tickets de referencia que se muestran como accesos rápidos en el modal
+// "Ver promos".
+const TICKETS_PROMO_DESTACADOS = [3, 5, 7, 9, 10];
+
+function comboActivoParaCantidad(cantidad = cantidadTickets) {
+  const pct = porcentajeDescuentoPorCantidad(cantidad);
+  if (!pct) return null;
   const precio = sorteoSeleccionado ? Number(sorteoSeleccionado.precio_ticket) : PRECIO_TICKET_DEFAULT;
-  const total  = cantidadTickets * precio;
-  const cantEl = document.getElementById('cantidad');
+  const total = cantidad * precio;
+  const conDescuento = total * (1 - pct / 100);
+  return Math.max(0, Math.round(conDescuento / 10) * 10); // redondeado a la decena más cercana
+}
+
+function actualizarMontos() {
+  const cantEl  = document.getElementById('cantidad');
   const totalEl = document.getElementById('total-monto');
   const yapeEl  = document.getElementById('yape-monto');
+  const aviso   = document.getElementById('promo-aplicada-aviso');
+  const texto   = document.getElementById('promo-aplicada-texto');
+
+  const precio      = sorteoSeleccionado ? Number(sorteoSeleccionado.precio_ticket) : PRECIO_TICKET_DEFAULT;
+  const totalNormal = cantidadTickets * precio;
+  const comboMonto  = comboActivoParaCantidad();
+  const total       = comboMonto ?? totalNormal;
+
   if (cantEl)  cantEl.textContent = cantidadTickets;
   if (totalEl) totalEl.textContent = `S/ ${total}`;
   if (yapeEl)  yapeEl.textContent  = total;
+
+  if (comboMonto != null && totalNormal > comboMonto && aviso && texto) {
+    const pct = porcentajeDescuentoPorCantidad(cantidadTickets);
+    texto.textContent = `${pct}% de descuento por llevar ${cantidadTickets} tickets`;
+    aviso.style.display = 'block';
+  } else if (aviso) {
+    aviso.style.display = 'none';
+  }
+}
+
+function abrirModalPromo() {
+  // Los precios del modal se calculan al vuelo según el precio_ticket
+  // del sorteo que el cliente está viendo — no son un monto fijo igual
+  // para todos los sorteos.
+  TICKETS_PROMO_DESTACADOS.forEach((cant) => {
+    const elPrecio = document.getElementById(`promo-precio-${cant}`);
+    if (elPrecio) elPrecio.textContent = `S/ ${comboActivoParaCantidad(cant)}`;
+    const elPct = document.getElementById(`promo-pct-${cant}`);
+    if (elPct) elPct.textContent = `-${porcentajeDescuentoPorCantidad(cant)}%`;
+  });
+  const modal = document.getElementById('modal-promo');
+  if (modal) modal.style.display = 'flex';
+}
+
+function cerrarModalPromo(event) {
+  if (event) event.preventDefault();
+  const modal = document.getElementById('modal-promo');
+  if (modal) modal.style.display = 'none';
+}
+
+// Botones del modal: solo fijan la cantidad — el combo se aplica solo
+// porque esa cantidad ya está en PORCENTAJES_POR_COMBO.
+function elegirPromo(cantidad) {
+  cantidadTickets = cantidad;
+  actualizarMontos();
+  cerrarModalPromo();
 }
 
 // ── Código de seguridad y fecha del comprobante ────────────────
-// Estos dos campos normalmente están ocultos: el servidor intenta
-// leerlos directamente de la imagen del comprobante. Solo se muestran
-// si el servidor no logró leer alguno, y en cuanto el participante
-// completa TODOS los que quedaron visibles, se reintenta el envío
-// automáticamente (con el mismo archivo ya seleccionado, sin que
-// tenga que volver a subirlo).
+// Estos dos campos normalmente están ocultos: al subir la imagen, el
+// servidor intenta leerlos directamente ahí (OCR). Solo se muestran si
+// el servidor avisa que no logró leer alguno — "camposFaltantes" guarda
+// exactamente cuáles pidió, y solo esos se exigen antes de reintentar.
+let camposFaltantes = [];
+
+const CAMPO_MANUAL_INPUT = {
+  codigo_seguridad: 'codigo-seguridad-input',
+  fecha_comprobante: 'fecha-comprobante-input',
+};
+const CAMPO_MANUAL_WRAPPER = {
+  codigo_seguridad: 'campo-codigo-manual',
+  fecha_comprobante: 'campo-fecha-manual',
+};
+
+function mostrarCampoManual(campo) {
+  const wrapper = document.getElementById(CAMPO_MANUAL_WRAPPER[campo]);
+  if (wrapper) wrapper.style.display = 'block';
+}
+
 function camposManualesCompletos() {
-  const grupoCodigo = document.getElementById('codigo-seguridad-group');
-  const grupoFecha  = document.getElementById('fecha-comprobante-group');
+  return camposFaltantes.every((campo) => {
+    const input = document.getElementById(CAMPO_MANUAL_INPUT[campo]);
+    return input && input.value.trim().length > 0;
+  });
+}
 
-  const codigoOk = grupoCodigo.style.display === 'none' ||
-    document.getElementById('codigo-seguridad-input').value.trim().length >= 3;
-  const fechaOk = grupoFecha.style.display === 'none' ||
-    !!document.getElementById('fecha-comprobante-input').value;
-
-  return codigoOk && fechaOk;
+function intentarEnvioAutomatico() {
+  if (archivoComprobante && camposManualesCompletos()) {
+    enviarComprobante();
+  }
 }
 
 document.getElementById('codigo-seguridad-input').addEventListener('input', function () {
   this.classList.remove('error');
-  if (archivoComprobante && camposManualesCompletos()) {
-    enviarComprobante();
-  }
+  intentarEnvioAutomatico();
 });
 
-document.getElementById('fecha-comprobante-input').addEventListener('input', function () {
+document.getElementById('fecha-comprobante-input').addEventListener('change', function () {
   this.classList.remove('error');
-  if (archivoComprobante && camposManualesCompletos()) {
-    enviarComprobante();
-  }
+  intentarEnvioAutomatico();
 });
 
 // ── Upload comprobante ────────────────────────────────────────
@@ -318,40 +385,25 @@ function archivoSeleccionado(event) {
 
   area.classList.add('uploaded');
   content.innerHTML = `
-    <div class="upload-icon">⏳</div>
-    <div class="upload-text">Leyendo comprobante...</div>
+    <div class="upload-icon">✅</div>
+    <div class="upload-text" style="color:#22c55e">¡Comprobante adjuntado!</div>
     <div style="font-size:12px;color:#6B7280;margin-top:4px">${archivo.name}</div>
   `;
 
-  // Se envía directamente: el servidor intenta leer el código de
-  // seguridad de la imagen. Si no puede, nos lo dice y ahí recién
-  // mostramos el campo manual.
-  enviarComprobante();
+  // Primer intento: no pedimos nada manual todavía — dejamos que el
+  // servidor intente leer el código y la fecha de la propia imagen.
+  if (camposManualesCompletos()) {
+    enviarComprobante();
+  }
 }
 
 // ── Enviar comprobante al servidor ──────────────────────────────
 async function enviarComprobante() {
   if (!archivoComprobante || !sorteoSeleccionado || enviandoComprobante) return;
+  if (!camposManualesCompletos()) return;
 
-  const codigoInput = document.getElementById('codigo-seguridad-input');
-  const codigo = codigoInput.value.trim();
-  // Si el grupo del código ya está visible es porque un intento anterior
-  // no logró leerlo automáticamente, así que ahora sí es obligatorio.
-  const codigoEsObligatorio = document.getElementById('codigo-seguridad-group').style.display !== 'none';
-  if (codigoEsObligatorio && codigo.length < 3) {
-    codigoInput.classList.add('error');
-    return;
-  }
-
-  const fechaInput = document.getElementById('fecha-comprobante-input');
-  const fecha = fechaInput.value.trim();
-  // Igual que el código: si el grupo de fecha ya está visible es porque
-  // el servidor no pudo leerla sola, así que ahora es obligatoria.
-  const fechaEsObligatoria = document.getElementById('fecha-comprobante-group').style.display !== 'none';
-  if (fechaEsObligatoria && !fecha) {
-    fechaInput.classList.add('error');
-    return;
-  }
+  const codigo = document.getElementById('codigo-seguridad-input').value.trim();
+  const fecha  = document.getElementById('fecha-comprobante-input').value.trim();
 
   const doc      = document.getElementById('doc-input').value.trim();
   const wsp      = document.getElementById('wsp-input').value.trim();
@@ -366,8 +418,13 @@ async function enviarComprobante() {
   formData.append('whatsapp', wsp);
   formData.append('sorteo_id', sorteoSeleccionado.id);
   formData.append('cantidad', cantidadTickets);
+  // Si el cliente todavía no los tiene (primer intento), se mandan vacíos
+  // y el servidor los completa leyendo la imagen con OCR.
   formData.append('codigo_seguridad', codigo);
   formData.append('fecha_comprobante', fecha);
+  // El monto lo recalcula el servidor por su cuenta (cantidad ×
+  // precio_ticket del sorteo, menos el descuento por combo si aplica) —
+  // no se manda el monto desde el navegador, nunca se confía en él.
   formData.append('archivo', archivoComprobante);
 
   const content = document.getElementById('upload-content');
@@ -382,27 +439,20 @@ async function enviarComprobante() {
     if (!resp.ok) {
       const errData = await resp.json().catch(() => ({}));
 
-      if (errData.requiereCodigoManual || errData.requiereFechaManual) {
-        // El servidor no pudo leer el código y/o la fecha de la imagen:
-        // mostramos los campos manuales que falten y dejamos el
-        // comprobante seleccionado para que no tenga que volver a
-        // subirlo, solo completar el dato faltante.
-        if (errData.requiereCodigoManual) {
-          document.getElementById('codigo-seguridad-group').style.display = 'block';
-          codigoInput.classList.add('error');
-        }
-        if (errData.requiereFechaManual) {
-          document.getElementById('fecha-comprobante-group').style.display = 'block';
-          fechaInput.classList.add('error');
-        }
-        (errData.requiereCodigoManual ? codigoInput : fechaInput).focus();
-
+      // El servidor no pudo leer algo de la imagen — mostramos solo esos
+      // campos y esperamos a que el cliente los complete. NO se limpia
+      // archivoComprobante: al llenar el campo se reintenta solo.
+      if (errData.error === 'ocr_incompleto' && Array.isArray(errData.faltan) && errData.faltan.length) {
+        camposFaltantes = errData.faltan;
+        camposFaltantes.forEach(mostrarCampoManual);
         content.innerHTML = `
-          <div class="upload-icon">✅</div>
-          <div class="upload-text" style="color:#22c55e">¡Comprobante adjuntado!</div>
-          <div style="font-size:12px;color:#6B7280;margin-top:4px">${archivoComprobante.name}</div>
+          <div class="upload-icon">✍️</div>
+          <div class="upload-text" style="color:#A50044">Necesitamos que confirmes un dato</div>
+          <div style="font-size:12px;color:#6B7280;margin-top:4px">No logramos leer todo de tu imagen — completa el campo marcado abajo.</div>
         `;
         enviandoComprobante = false;
+        const primerCampo = document.getElementById(CAMPO_MANUAL_INPUT[camposFaltantes[0]]);
+        if (primerCampo) primerCampo.focus();
         return;
       }
 
@@ -432,8 +482,11 @@ function irPaso3() {
 
   document.getElementById('wsp-confirm').textContent    = `+51 ${wsp}`;
   document.getElementById('confirm-tickets').textContent = `${cantidadTickets} ticket${cantidadTickets > 1 ? 's' : ''}`;
-  document.getElementById('confirm-monto').textContent   = `S/ ${cantidadTickets * (sorteoSeleccionado ? Number(sorteoSeleccionado.precio_ticket) : PRECIO_TICKET_DEFAULT)}`;
-  document.getElementById('confirm-nombre').textContent  = nombreCompleto;
+  const totalConfirmado = comboActivoParaCantidad()
+    ?? cantidadTickets * (sorteoSeleccionado ? Number(sorteoSeleccionado.precio_ticket) : PRECIO_TICKET_DEFAULT);
+  document.getElementById('confirm-monto').textContent  = `S/ ${totalConfirmado}`;
+  document.getElementById('confirm-nombre').textContent = nombreCompleto;
+  actualizarNombreSorteo();
 
   document.getElementById('prog2').classList.add('done');
   document.getElementById('prog3').classList.add('active');

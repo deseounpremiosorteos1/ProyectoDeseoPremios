@@ -42,10 +42,10 @@
       </div>
       <div class="progress-label" id="progress-label">Paso 1 de 3 — <strong>Tus datos</strong></div>
 
-      <!-- Sorteo elegido (según la tarjeta desde la que se dio clic en "Participar") -->
-      <div class="detalle-row" style="background:#F1F5F9;border-radius:10px;padding:10px 14px;margin-bottom:16px">
-        <span>Estás participando en</span>
-        <strong id="sorteo-actual-nombre">Cargando…</strong>
+      <!-- SORTEO ACTUAL -->
+      <div class="form-card" style="display:flex;justify-content:space-between;align-items:center;padding:14px 20px;margin-bottom:16px;background:#EFF6FF">
+        <span style="color:#64748B">Estás participando en</span>
+        <strong id="sorteo-actual-nombre">Cargando...</strong>
       </div>
 
       <!-- ══ PASO 1: TUS DATOS ══════════════════════════════════ -->
@@ -114,7 +114,13 @@
 
           <!-- Cantidad de tickets -->
           <div class="form-card mb16">
-            <div class="field-label mb8">¿CUÁNTOS TICKETS QUIERES?</div>
+            <div style="display:flex;justify-content:space-between;align-items:center" class="mb8">
+              <div class="field-label" style="margin:0">¿CUÁNTOS TICKETS QUIERES?</div>
+              <button type="button" onclick="abrirModalPromo()"
+                style="background:#FEF3C7;color:#92400E;border:none;border-radius:20px;padding:6px 12px;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit">
+                🔥 Ver promos
+              </button>
+            </div>
             <div class="counter-row">
               <button class="counter-btn" onclick="cambiarCantidad(-1)">−</button>
               <span class="counter-num" id="cantidad">1</span>
@@ -124,23 +130,20 @@
                 <span class="total-monto" id="total-monto">S/ 60</span>
               </div>
             </div>
+            <div id="promo-aplicada-aviso" style="display:none;margin-top:10px;background:#ECFDF5;color:#047857;font-size:12px;font-weight:700;padding:8px 12px;border-radius:8px;text-align:center">
+              <span id="promo-aplicada-texto"></span>
+            </div>
           </div>
 
           <!-- Subir comprobante -->
           <div class="form-card">
             <div class="field-label mb8">¿YA REALIZASTE EL PAGO?</div>
 
-            <div class="upload-area" id="upload-area" onclick="triggerUpload()">
-              <input type="file" id="file-input" accept="image/*" style="display:none" onchange="archivoSeleccionado(event)"/>
-              <div id="upload-content">
-                <div class="upload-icon">📤</div>
-                <div class="upload-text">Subir comprobante</div>
-              </div>
-            </div>
-
-            <!-- Código de seguridad: normalmente se lee solo de la imagen.
-                 Este campo se muestra únicamente si no se pudo leer. -->
-            <div class="field-group" id="codigo-seguridad-group" style="display:none">
+            <!-- Estos dos campos están ocultos por defecto: el servidor
+                 intenta leer el código y la fecha directo de la imagen del
+                 comprobante (OCR). Solo se muestran si no logró leer
+                 alguno de los dos, y JS los va llenando con display:block. -->
+            <div class="field-group" id="campo-codigo-manual" style="display:none">
               <label class="field-label" for="codigo-seguridad-input">Código de seguridad del comprobante</label>
               <input
                 type="text"
@@ -149,22 +152,28 @@
                 placeholder="Ej: 965"
                 maxlength="10"
               />
-              <div id="codigo-seguridad-msg" style="font-size:12px;color:#6B7280;margin-top:4px">
-                No pudimos leerlo automáticamente de tu comprobante. Escribe el código de 3 dígitos que aparece justo debajo de la fecha (o el N° de operación si pagaste con otra app).
+              <div style="font-size:12px;color:#6B7280;margin-top:4px">
+                No pudimos leerlo de tu imagen — es el código de 3 dígitos que aparece en tu comprobante de Yape, justo debajo de la fecha (o el N° de operación si pagaste con otra app).
               </div>
             </div>
 
-            <!-- Fecha del comprobante: normalmente se lee sola de la imagen.
-                 Este campo se muestra únicamente si no se pudo leer. -->
-            <div class="field-group" id="fecha-comprobante-group" style="display:none">
+            <div class="field-group" id="campo-fecha-manual" style="display:none">
               <label class="field-label" for="fecha-comprobante-input">Fecha del comprobante</label>
               <input
                 type="date"
                 id="fecha-comprobante-input"
                 class="input-wsp"
               />
-              <div id="fecha-comprobante-msg" style="font-size:12px;color:#6B7280;margin-top:4px">
-                No pudimos leer la fecha de tu comprobante. Selecciona la fecha que aparece en la parte de arriba de tu comprobante (junto a la hora del pago).
+              <div style="font-size:12px;color:#6B7280;margin-top:4px">
+                No pudimos leerla de tu imagen — es la fecha en la que hiciste el pago (aparece arriba del código, en tu comprobante).
+              </div>
+            </div>
+
+            <div class="upload-area" id="upload-area" onclick="triggerUpload()">
+              <input type="file" id="file-input" accept="image/*" style="display:none" onchange="archivoSeleccionado(event)"/>
+              <div id="upload-content">
+                <div class="upload-icon">📤</div>
+                <div class="upload-text">Subir comprobante</div>
               </div>
             </div>
           </div>
@@ -179,7 +188,7 @@
             <div class="yape-box">
               <div class="yape-label-sm">PAGA CON YAPE</div>
               <div class="yape-num">926 636 117</div>
-              <div class="yape-empresa">Deseo un Premio S.A.C.</div>
+              <div class="yape-empresa">Jc Multisorteos Elite E.I.R.L.</div>
               <div class="yape-qr">
                 <img src="assets/yape-qr.png" alt="Código QR Yape" width="150" height="150" class="qr-img">
               </div>
@@ -221,6 +230,45 @@
 
     </div>
   </main>
+
+  <!-- MODAL DE PROMOCIONES -->
+  <div class="modal-overlay" id="modal-promo" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:999;align-items:center;justify-content:center" onclick="cerrarModalPromo(event)">
+    <div onclick="event.stopPropagation()" style="background:#fff;border-radius:16px;max-width:340px;width:90%;padding:24px;position:relative;box-shadow:0 20px 50px rgba(0,0,0,.25)">
+      <button onclick="cerrarModalPromo(event)" style="position:absolute;top:12px;right:14px;background:none;border:none;font-size:20px;cursor:pointer;color:#94A3B8">✕</button>
+      <div style="text-align:center;font-size:28px">🔥</div>
+      <h3 style="text-align:center;margin:8px 0 4px;font-size:18px">Promos por combo</h3>
+      <p style="text-align:center;color:#6B7280;font-size:13px;margin:0 0 18px">Elige un combo y te fijamos la cantidad y el precio al toque.</p>
+
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <button type="button" class="promo-combo-btn" onclick="elegirPromo(3)"
+          style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border:2px solid #E2E8F0;border-radius:10px;background:#F8FAFC;cursor:pointer;font-family:inherit">
+          <span style="font-weight:700">3 tickets <span style="color:#16A34A;font-weight:700" id="promo-pct-3">-11%</span></span>
+          <span style="font-weight:800;color:#A50044" id="promo-precio-3">S/ --</span>
+        </button>
+        <button type="button" class="promo-combo-btn" onclick="elegirPromo(5)"
+          style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border:2px solid #E2E8F0;border-radius:10px;background:#F8FAFC;cursor:pointer;font-family:inherit">
+          <span style="font-weight:700">5 tickets <span style="color:#16A34A;font-weight:700" id="promo-pct-5">-12%</span></span>
+          <span style="font-weight:800;color:#A50044" id="promo-precio-5">S/ --</span>
+        </button>
+        <button type="button" class="promo-combo-btn" onclick="elegirPromo(7)"
+          style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border:2px solid #E2E8F0;border-radius:10px;background:#F8FAFC;cursor:pointer;font-family:inherit">
+          <span style="font-weight:700">7 tickets <span style="color:#16A34A;font-weight:700" id="promo-pct-7">-13%</span></span>
+          <span style="font-weight:800;color:#A50044" id="promo-precio-7">S/ --</span>
+        </button>
+        <button type="button" class="promo-combo-btn" onclick="elegirPromo(9)"
+          style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border:2px solid #E2E8F0;border-radius:10px;background:#F8FAFC;cursor:pointer;font-family:inherit">
+          <span style="font-weight:700">9 tickets <span style="color:#16A34A;font-weight:700" id="promo-pct-9">-14%</span></span>
+          <span style="font-weight:800;color:#A50044" id="promo-precio-9">S/ --</span>
+        </button>
+        <button type="button" class="promo-combo-btn" onclick="elegirPromo(10)"
+          style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border:2px solid #E2E8F0;border-radius:10px;background:#F8FAFC;cursor:pointer;font-family:inherit">
+          <span style="font-weight:700">10 tickets <span style="color:#16A34A;font-weight:700" id="promo-pct-10">-15%</span></span>
+          <span style="font-weight:800;color:#A50044" id="promo-precio-10">S/ --</span>
+        </button>
+      </div>
+      <p style="text-align:center;color:#94A3B8;font-size:11px;margin:14px 0 0">El descuento aplica solo en 3, 5, 7, 9 o 10 tickets.</p>
+    </div>
+  </div>
 
   <!-- WHATSAPP FLOTANTE -->
   <a href="https://wa.me/51964146346" target="_blank" class="btn-whatsapp">
