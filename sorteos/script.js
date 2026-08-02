@@ -1,3 +1,4 @@
+
 // ── Countdown Timer ───────────────────────────────────────────
 // El banner "Próximo sorteo" ya NO tiene una fecha fija en el HTML:
 // se calcula solo con el sorteo ACTIVO cuya fecha_sorteo sea la más
@@ -213,7 +214,7 @@ function renderSorteoCardPublico(s, destacado) {
         <span class="meta-item">⏰ ${horaStr}</span>
       </div>
       ${premiosHtml}
-      <a href="participar?sorteo=${s.id}" class="btn-participar">Participar →</a>
+      <a href="participar.html?sorteo=${s.id}" class="btn-participar">Participar →</a>
     </div>
   `;
 }
