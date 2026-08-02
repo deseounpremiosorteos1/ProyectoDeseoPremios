@@ -2,7 +2,7 @@
 // Configuración del servidor API
 // Si en algún momento subes el backend a internet, solo cambia esta línea
 // ════════════════════════════════════════════════════════════════
-const API_URL = 'http://localhost:3000';
+const API_URL = window.API_BASE_URL.replace(/\/api$/, '');
 
 // ── Estado ────────────────────────────────────────────────────
 let modoExtranjeria = false;
