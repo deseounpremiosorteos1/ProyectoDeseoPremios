@@ -299,8 +299,15 @@ function renderCarrusel() {
   const maxIndex = Math.max(0, total - porVista);
   carruselIndex = Math.min(Math.max(carruselIndex, 0), maxIndex);
 
-  const pct = 100 / porVista;
-  grid.style.transform = `translateX(-${carruselIndex * pct}%)`;
+ const primeraCard = grid.querySelector('.sorteo-card');
+
+ if (primeraCard) {
+   const estilosGrid = window.getComputedStyle(grid);
+   const gap = parseFloat(estilosGrid.columnGap || estilosGrid.gap) || 0;
+   const desplazamiento = carruselIndex * (primeraCard.offsetWidth + gap);
+
+   grid.style.transform = `translateX(-${desplazamiento}px)`;
+ }
 
   if (prev) prev.disabled = carruselIndex <= 0;
   if (next) next.disabled = carruselIndex >= maxIndex;
