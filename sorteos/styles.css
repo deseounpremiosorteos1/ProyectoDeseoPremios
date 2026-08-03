@@ -887,7 +887,10 @@ body.dark-mode .card-price .per-ticket {
 @media (max-width: 600px) {
   .steps-grid { grid-template-columns: 1fr; }
   .ganadores-grid { grid-template-columns: 1fr 1fr; }
-  .yape-number { font-size: 30px; }
+  .yape-number {
+  font-size: 30px;
+  color: var(--gold-light);
+  }
   .countdown-timer { gap: 4px; }
   .time-block { min-width: 54px; padding: 10px 12px; }
   .time-block span { font-size: 22px; }
