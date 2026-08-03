@@ -26,11 +26,32 @@
       <a href="#como-participar" class="nav-link">¿Cómo participar?</a>
       <a href="#ganadores" class="nav-link">Ganadores</a>
       <a href="mis-tickets.html" class="nav-link">Mis Tickets</a>
-      <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Cambiar tema" aria-label="Cambiar tema claro/oscuro">
+      <button class="theme-toggle"
+              id="theme-toggle"
+              onclick="toggleTheme()"
+              title="Cambiar tema"
+              aria-label="Cambiar tema claro/oscuro">
         <span id="theme-icon">🌙</span>
       </button>
     </div>
+      <button
+              class="mobile-menu-btn"
+              id="mobile-menu-btn"
+              type="button"
+              aria-label="Abrir menú"
+              aria-expanded="false">
+          ☰
+      </button>
   </nav>
+  <div class="mobile-menu" id="mobile-menu">
+      <a href="#sorteos">Sorteos</a>
+      <a href="#como-participar">¿Cómo participar?</a>
+      <a href="#ganadores">Ganadores</a>
+      <a href="mis-tickets.html">Mis Tickets</a>
+      <button type="button" onclick="toggleTheme()">
+          🌙 Cambiar tema
+      </button>
+  </div>
 
   <!-- HERO -->
   <section class="hero">

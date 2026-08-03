@@ -1193,3 +1193,70 @@ body.dark-mode .card-price .per-ticket {
     bottom: 18px;
   }
 }
+
+/* Menú móvil: oculto en escritorio */
+.mobile-menu-btn,
+.mobile-menu {
+  display: none;
+}
+
+/* Solo celular y tablet */
+@media (max-width: 900px) {
+  .nav-links {
+    display: none;
+  }
+
+  .mobile-menu-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+  }
+
+  .mobile-menu {
+    position: fixed;
+    top: 78px;
+    left: 14px;
+    right: 14px;
+    z-index: 1000;
+    flex-direction: column;
+    gap: 8px;
+    padding: 14px;
+    border-radius: 16px;
+    background: linear-gradient(160deg, #001233, #004d98);
+    box-shadow: 0 16px 40px rgba(0, 18, 51, 0.4);
+  }
+
+  .mobile-menu.active {
+    display: flex;
+  }
+
+  .mobile-menu a,
+  .mobile-menu button {
+    width: 100%;
+    padding: 14px 16px;
+    border: 0;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+    text-align: left;
+    text-decoration: none;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .mobile-menu a:first-child {
+    background: linear-gradient(135deg, #edbb00, #f5d248);
+    color: #001233;
+  }
+}
