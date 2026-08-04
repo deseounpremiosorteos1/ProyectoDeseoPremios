@@ -32,9 +32,10 @@
       <a href="mis-tickets.html" class="nav-link">Mis Tickets</a>
       <button class="theme-toggle"
               id="theme-toggle"
-              onclick="toggleTheme()"
-              title="Cambiar tema"
-              aria-label="Cambiar tema claro/oscuro">
+              type="button"
+              title="Cambiar a tema oscuro"
+              aria-label="Cambiar a tema oscuro"
+              aria-pressed="false">
         <span id="theme-icon">🌙</span>
       </button>
     </div>
@@ -52,8 +53,8 @@
       <a href="#como-participar">¿Cómo participar?</a>
       <a href="#ganadores">Ganadores</a>
       <a href="mis-tickets.html">Mis Tickets</a>
-      <button type="button" onclick="toggleTheme()">
-          🌙 Cambiar tema
+      <button type="button" id="mobile-theme-toggle">
+          <span id="mobile-theme-icon">🌙</span> Cambiar tema
       </button>
   </div>
 
@@ -290,6 +291,6 @@
   </a>
   <script src="config.js"></script>
   <script src="script.js"></script>
-  <script src="ui.js"></script>
+  <script src="tema-global.js"></script>
 </body>
 </html>

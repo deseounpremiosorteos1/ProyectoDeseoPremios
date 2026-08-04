@@ -2361,3 +2361,50 @@ tbody tr:hover { background:rgba(14,147,77,.07) !important; }
     font-size: 10px !important;
   }
 }
+
+body {
+  transition: background-color .3s ease, color .3s ease;
+}
+
+body.dark-mode {
+  background: #00150b;
+  color: #f7fff9;
+}
+
+body.dark-mode .sorteos-section,
+body.dark-mode .ganadores-section {
+  background: #00150b;
+}
+
+body.dark-mode .como-participar,
+body.dark-mode .countdown-section,
+body.dark-mode .footer {
+  background: #00210f;
+}
+
+body.dark-mode .sorteo-card,
+body.dark-mode .step,
+body.dark-mode .ganador-card,
+body.dark-mode .countdown-card,
+body.dark-mode .footer-link-item {
+  background: linear-gradient(145deg, #073a20, #021f10);
+  color: #f7fff9;
+  border-color: rgba(237, 187, 0, .28);
+}
+
+body.dark-mode .card-title,
+body.dark-mode .section-title,
+body.dark-mode .step h3,
+body.dark-mode .ganador-nombre,
+body.dark-mode .footer-link-title {
+  color: #ffffff;
+}
+
+body.dark-mode .card-desc,
+body.dark-mode .step p,
+body.dark-mode .ganador-fecha,
+body.dark-mode .footer-link-sub,
+body.dark-mode .footer-legal a,
+body.dark-mode .footer-copy {
+  color: rgba(255,255,255,.72);
+}
