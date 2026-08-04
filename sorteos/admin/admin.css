@@ -1253,3 +1253,239 @@ tbody tr:hover { background:rgba(14,147,77,.07) !important; }
     transform: scale(1);
   }
 }
+.admin-main,
+.main-content,
+.content,
+.section,
+.card,
+.table-card,
+.table-wrap {
+  background: #f4f7f5 !important;
+  color: #10261a !important;
+}
+
+/* Barra superior */
+.topbar {
+  background: #ffffff !important;
+  color: #10261a !important;
+  border-bottom: 1px solid #dce7df !important;
+  box-shadow: 0 2px 10px rgba(0, 43, 22, 0.08) !important;
+}
+
+.topbar h1,
+.topbar-title,
+#topbar-title {
+  color: #10261a !important;
+}
+
+/* Sidebar más limpia */
+.sidebar {
+  width: 240px !important;
+  background:
+    linear-gradient(180deg, #002b16 0%, #001b0e 100%) !important;
+  color: #ffffff !important;
+}
+
+.sidebar-brand {
+  min-height: 190px !important;
+  padding: 22px 18px 18px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  gap: 10px !important;
+}
+
+.sidebar-logo {
+  width: 118px !important;
+  height: 118px !important;
+  min-width: 118px !important;
+  min-height: 118px !important;
+}
+
+.sidebar-logo-img {
+  width: 118px !important;
+  height: 118px !important;
+  object-fit: cover !important;
+  border-radius: 50% !important;
+}
+
+.sidebar-brand-text,
+.sb-text {
+  width: 100% !important;
+  text-align: center !important;
+}
+
+.sidebar-brand h2,
+.sb-name {
+  margin: 0 !important;
+  color: #f5d248 !important;
+  font-size: 17px !important;
+  line-height: 1.2 !important;
+  white-space: normal !important;
+}
+
+.sidebar-brand p,
+.sb-sub {
+  margin: 3px 0 0 !important;
+  color: rgba(255,255,255,.72) !important;
+  font-size: 11px !important;
+  line-height: 1.3 !important;
+}
+
+.nav-item {
+  color: rgba(255,255,255,.83) !important;
+}
+
+.nav-item:hover {
+  background: rgba(255,255,255,.08) !important;
+  color: #ffffff !important;
+}
+
+.nav-item.active {
+  background: linear-gradient(135deg, #edbb00, #ffe475) !important;
+  color: #10261a !important;
+}
+
+/* Tablas: fondo blanco y texto oscuro */
+.table-wrap,
+.admin-table,
+table.admin-table {
+  background: #ffffff !important;
+  color: #10261a !important;
+  border-radius: 14px !important;
+  overflow-x: auto !important;
+  box-shadow: 0 8px 24px rgba(0, 43, 22, 0.08) !important;
+}
+
+.admin-table thead,
+.admin-table thead tr,
+.admin-table th {
+  background: #eef5f0 !important;
+  color: #395347 !important;
+}
+
+.admin-table th {
+  border-bottom: 1px solid #dce7df !important;
+}
+
+.admin-table tbody,
+.admin-table tbody tr,
+.admin-table td {
+  background: #ffffff !important;
+  color: #10261a !important;
+}
+
+.admin-table td {
+  border-bottom: 1px solid #e6eee8 !important;
+}
+
+.admin-table tbody tr:hover td {
+  background: #f3faf5 !important;
+}
+
+/* Textos importantes dentro de tablas */
+.admin-table strong,
+.admin-table a,
+.admin-table span:not(.estado) {
+  color: inherit !important;
+}
+
+/* Tarjetas del dashboard */
+.kpi-card,
+.card,
+.sorteo-admin-card,
+.stats-card,
+.chart-card {
+  background: #ffffff !important;
+  color: #10261a !important;
+  border: 1px solid #dce7df !important;
+  box-shadow: 0 8px 24px rgba(0, 43, 22, 0.07) !important;
+}
+
+.kpi-label,
+.section-date,
+.sorteo-stat-row span,
+.bar-label {
+  color: #65766d !important;
+}
+
+/* Formularios */
+.search-input,
+.filter-select,
+.login-input,
+select,
+input,
+textarea {
+  background: #ffffff !important;
+  color: #10261a !important;
+  border-color: #cfded3 !important;
+}
+
+.search-input::placeholder,
+input::placeholder,
+textarea::placeholder {
+  color: #8a9b91 !important;
+}
+
+/* Modales */
+.modal-content,
+.modal-box {
+  background: #ffffff !important;
+  color: #10261a !important;
+}
+
+.detail-row {
+  border-bottom-color: #e6eee8 !important;
+}
+
+.detail-row span {
+  color: #65766d !important;
+}
+
+.detail-row strong {
+  color: #10261a !important;
+}
+
+/* Mantener los estados visibles */
+.estado.pendiente {
+  background: #fff5bf !important;
+  color: #7a5800 !important;
+}
+
+.estado.aprobado {
+  background: #dff8e7 !important;
+  color: #126232 !important;
+}
+
+.estado.rechazado {
+  background: #ffe1e5 !important;
+  color: #9b1c2c !important;
+}
+
+/* Ajuste del área principal por el ancho real del sidebar */
+.main-content,
+.admin-main {
+  margin-left: 240px !important;
+}
+
+/* Responsive del administrador */
+@media (max-width: 900px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .main-content,
+  .admin-main {
+    margin-left: 0 !important;
+  }
+
+  .admin-table {
+    min-width: 1050px !important;
+  }
+}
