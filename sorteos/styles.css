@@ -1,4 +1,3 @@
-/* ── Reset & Base ─────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
@@ -2407,4 +2406,151 @@ body.dark-mode .footer-link-sub,
 body.dark-mode .footer-legal a,
 body.dark-mode .footer-copy {
   color: rgba(255,255,255,.72);
+}
+
+
+/* ============================================================
+   TEMA CLARO / OSCURO DEFINITIVO — PÁGINA PRINCIPAL
+   ============================================================ */
+
+/* Variables del tema claro */
+body:not(.dark-mode) {
+  --page-bg: #f4fbf6 !important;
+  --surface: #ffffff !important;
+  --on-surface: #10261a !important;
+  --sub-text: #65766d !important;
+  --divider: #d9eddf !important;
+  --dup-border: rgba(14,147,77,.22) !important;
+  --dup-shadow: 0 18px 48px rgba(0,75,40,.16) !important;
+}
+
+/* Variables del tema oscuro */
+body.dark-mode {
+  --page-bg: #00150b !important;
+  --surface: #052b17 !important;
+  --on-surface: #ffffff !important;
+  --sub-text: rgba(255,255,255,.74) !important;
+  --divider: rgba(255,255,255,.11) !important;
+  --dup-border: rgba(237,187,0,.34) !important;
+  --dup-shadow: 0 22px 58px rgba(0,0,0,.48) !important;
+}
+
+/* Fondo general */
+body:not(.dark-mode) {
+  background:
+    radial-gradient(circle at 12% 0, rgba(237,187,0,.06), transparent 24%),
+    radial-gradient(circle at 88% 0, rgba(22,168,91,.08), transparent 28%),
+    #f4fbf6 !important;
+  color: #10261a !important;
+}
+
+body.dark-mode {
+  background:
+    radial-gradient(circle at 12% 0, rgba(237,187,0,.08), transparent 24%),
+    radial-gradient(circle at 88% 0, rgba(22,168,91,.10), transparent 28%),
+    #00150b !important;
+  color: #ffffff !important;
+}
+
+/* Secciones claras */
+body:not(.dark-mode) .sorteos-section,
+body:not(.dark-mode) .ganadores-section,
+body:not(.dark-mode) .countdown-section {
+  background:
+    radial-gradient(circle at 80% 0, rgba(22,168,91,.07), transparent 30%),
+    #f4fbf6 !important;
+}
+
+/* Secciones oscuras */
+body.dark-mode .sorteos-section,
+body.dark-mode .ganadores-section,
+body.dark-mode .countdown-section {
+  background:
+    radial-gradient(circle at 80% 0, rgba(237,187,0,.07), transparent 30%),
+    #00150b !important;
+}
+
+/* Tarjetas */
+body:not(.dark-mode) .sorteo-card,
+body:not(.dark-mode) .ganador-card {
+  background:
+    radial-gradient(circle at 90% 8%, rgba(237,187,0,.08), transparent 28%),
+    linear-gradient(145deg, #ffffff, #f7fcf8) !important;
+  color: #10261a !important;
+  border-color: rgba(14,147,77,.20) !important;
+}
+
+body.dark-mode .sorteo-card,
+body.dark-mode .ganador-card {
+  background:
+    radial-gradient(circle at 90% 8%, rgba(237,187,0,.10), transparent 28%),
+    linear-gradient(145deg, #073a20, #021f10) !important;
+  color: #ffffff !important;
+  border-color: rgba(237,187,0,.30) !important;
+}
+
+/* Textos */
+body:not(.dark-mode) .card-title,
+body:not(.dark-mode) .ganador-nombre,
+body:not(.dark-mode) .section-header .section-title,
+body:not(.dark-mode) .meta-item,
+body:not(.dark-mode) .premios-toggle,
+body:not(.dark-mode) .premio-item {
+  color: #10261a !important;
+}
+
+body:not(.dark-mode) .card-desc,
+body:not(.dark-mode) .ganador-fecha,
+body:not(.dark-mode) .card-price .per-ticket {
+  color: #65766d !important;
+}
+
+body.dark-mode .card-title,
+body.dark-mode .ganador-nombre,
+body.dark-mode .section-header .section-title,
+body.dark-mode .meta-item,
+body.dark-mode .premios-toggle,
+body.dark-mode .premio-item {
+  color: #ffffff !important;
+}
+
+body.dark-mode .card-desc,
+body.dark-mode .ganador-fecha,
+body.dark-mode .card-price .per-ticket {
+  color: rgba(255,255,255,.72) !important;
+}
+
+/* Controles */
+body:not(.dark-mode) .premios-toggle,
+body:not(.dark-mode) .premios-list {
+  background: rgba(14,147,77,.09) !important;
+}
+
+body.dark-mode .premios-toggle,
+body.dark-mode .premios-list {
+  background: rgba(255,255,255,.06) !important;
+}
+
+/* Botón de tema */
+.theme-toggle {
+  pointer-events: auto !important;
+  position: relative !important;
+  z-index: 1003 !important;
+  cursor: pointer !important;
+}
+
+/* Transición */
+body,
+.sorteos-section,
+.ganadores-section,
+.countdown-section,
+.sorteo-card,
+.ganador-card,
+.premios-toggle,
+.premios-list {
+  transition:
+    background .30s ease,
+    color .30s ease,
+    border-color .30s ease,
+    box-shadow .30s ease !important;
 }

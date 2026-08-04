@@ -3,74 +3,59 @@
 
   const STORAGE_KEY = 'dup-theme';
 
-  function getSavedTheme() {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    return saved === 'dark' || saved === 'light' ? saved : 'light';
+  function aplicarTema(tema) {
+    const oscuro = tema === 'dark';
+
+    document.body.classList.toggle('dark-mode', oscuro);
+    document.documentElement.classList.toggle('dark-mode', oscuro);
+    document.documentElement.setAttribute('data-theme', tema);
+
+    const icono = document.getElementById('theme-icon');
+    const iconoMovil = document.getElementById('mobile-theme-icon');
+
+    if (icono) icono.textContent = oscuro ? '☀️' : '🌙';
+    if (iconoMovil) iconoMovil.textContent = oscuro ? '☀️' : '🌙';
+
+    localStorage.setItem(STORAGE_KEY, tema);
   }
 
-  function applyTheme(theme) {
-    const isDark = theme === 'dark';
-
-    document.body.classList.toggle('dark-mode', isDark);
-    document.documentElement.classList.toggle('dark-mode', isDark);
-    document.documentElement.dataset.theme = theme;
-
-    const desktopIcon = document.getElementById('theme-icon');
-    const mobileIcon = document.getElementById('mobile-theme-icon');
-    const desktopButton = document.getElementById('theme-toggle');
-
-    if (desktopIcon) desktopIcon.textContent = isDark ? '☀️' : '🌙';
-    if (mobileIcon) mobileIcon.textContent = isDark ? '☀️' : '🌙';
-
-    if (desktopButton) {
-      desktopButton.setAttribute('aria-pressed', String(isDark));
-      desktopButton.setAttribute(
-        'aria-label',
-        isDark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'
-      );
-      desktopButton.title = isDark
-        ? 'Cambiar a tema claro'
-        : 'Cambiar a tema oscuro';
-    }
-  }
-
-  function toggleTheme() {
-    const nextTheme = document.body.classList.contains('dark-mode')
+  function cambiarTema() {
+    const nuevoTema = document.body.classList.contains('dark-mode')
       ? 'light'
       : 'dark';
 
-    localStorage.setItem(STORAGE_KEY, nextTheme);
-    applyTheme(nextTheme);
+    aplicarTema(nuevoTema);
   }
 
-  function initializeTheme() {
-    applyTheme(getSavedTheme());
+  function iniciar() {
+    const guardado = localStorage.getItem(STORAGE_KEY);
+    aplicarTema(guardado === 'dark' ? 'dark' : 'light');
 
-    const desktopButton = document.getElementById('theme-toggle');
-    const mobileButton = document.getElementById('mobile-theme-toggle');
+    const boton = document.getElementById('theme-toggle');
+    const botonMovil = document.getElementById('mobile-theme-toggle');
 
-    if (desktopButton) {
-      desktopButton.onclick = (event) => {
+    if (boton) {
+      boton.onclick = function (event) {
         event.preventDefault();
         event.stopPropagation();
-        toggleTheme();
+        cambiarTema();
       };
     }
 
-    if (mobileButton) {
-      mobileButton.onclick = (event) => {
+    if (botonMovil) {
+      botonMovil.onclick = function (event) {
         event.preventDefault();
         event.stopPropagation();
-        toggleTheme();
+        cambiarTema();
       };
     }
   }
 
-  window.toggleTheme = toggleTheme;
+  window.toggleTheme = cambiarTema;
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeTheme, { once: true });
+    document.addEventListener('DOMContentLoaded', iniciar, { once: true });
   } else {
-    initializeTheme();
+    iniciar();
   }
 })();
