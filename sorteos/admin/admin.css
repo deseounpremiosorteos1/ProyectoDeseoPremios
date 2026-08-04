@@ -1248,248 +1248,64 @@ tbody tr:hover { background:rgba(14,147,77,.07) !important; }
 }
 
 /* Ajuste móvil */
-@media (max-width: 900px) {
-  html,
-  body {
-    width: 100%;
-    max-width: 100%;
-    overflow-x: hidden !important;
+document.addEventListener('DOMContentLoaded', () => {
+  const sidebar = document.getElementById('sidebar');
+  const menuButton = document.getElementById('sidebar-toggle');
+
+  if (!sidebar || !menuButton) {
+    console.warn('No se encontró #sidebar o #sidebar-toggle');
+    return;
   }
 
-  /* Sidebar oculto por defecto */
-  .sidebar {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    bottom: 0 !important;
-    width: min(82vw, 280px) !important;
-    height: 100dvh !important;
-    z-index: 2000 !important;
-    transform: translateX(-105%) !important;
-    transition: transform .28s ease !important;
-    overflow-y: auto !important;
-    box-shadow: 18px 0 40px rgba(0,0,0,.34) !important;
+  let overlay = document.querySelector('.sidebar-overlay');
+
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.className = 'sidebar-overlay';
+    document.body.appendChild(overlay);
   }
 
-  /* Compatibilidad con distintas clases que pueda usar tu JS */
-  .sidebar.open,
-  .sidebar.active,
-  body.sidebar-open .sidebar {
-    transform: translateX(0) !important;
+  function abrirMenu() {
+    sidebar.classList.add('open');
+    overlay.classList.add('show');
+    document.body.classList.add('sidebar-open');
+    menuButton.setAttribute('aria-expanded', 'true');
   }
 
-  /* Fondo oscuro detrás del menú */
-  .sidebar-overlay {
-    position: fixed !important;
-    inset: 0 !important;
-    z-index: 1900 !important;
-    display: none !important;
-    background: rgba(0,0,0,.48) !important;
-    backdrop-filter: blur(2px);
+  function cerrarMenu() {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('show');
+    document.body.classList.remove('sidebar-open');
+    menuButton.setAttribute('aria-expanded', 'false');
   }
 
-  .sidebar-overlay.show,
-  .sidebar-overlay.active,
-  body.sidebar-open .sidebar-overlay {
-    display: block !important;
-  }
+  menuButton.addEventListener('click', event => {
+    event.preventDefault();
 
-  /* El contenido ocupa todo el ancho */
-  .main-content,
-  .admin-main,
-  .content {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin-left: 0 !important;
-    padding: 0 !important;
-    overflow-x: hidden !important;
-  }
+    if (sidebar.classList.contains('open')) {
+      cerrarMenu();
+    } else {
+      abrirMenu();
+    }
+  });
 
-  /* Barra superior */
-  .topbar {
-    position: sticky !important;
-    top: 0 !important;
-    z-index: 1200 !important;
-    min-height: 64px !important;
-    padding: 12px 14px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-  }
+  overlay.addEventListener('click', cerrarMenu);
 
-  .topbar h1,
-  .topbar-title,
-  #topbar-title {
-    font-size: 18px !important;
-    line-height: 1.2 !important;
-    margin: 0 !important;
-  }
+  sidebar.querySelectorAll('.nav-item, a').forEach(item => {
+    item.addEventListener('click', () => {
+      if (window.innerWidth <= 900) {
+        cerrarMenu();
+      }
+    });
+  });
 
-  /* Botón hamburguesa visible */
-  .menu-toggle,
-  .mobile-menu-toggle,
-  #menu-toggle,
-  #sidebar-toggle {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: 44px !important;
-    height: 44px !important;
-    flex: 0 0 44px !important;
-    border-radius: 12px !important;
-  }
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 900) {
+      cerrarMenu();
+    }
+  });
+});
 
-  /* Contenedor de las secciones */
-  .section,
-  .page-section,
-  .dashboard-content,
-  .admin-content {
-    width: 100% !important;
-    max-width: 100% !important;
-    padding: 16px !important;
-    box-sizing: border-box !important;
-  }
-
-  /* KPIs en una sola columna */
-  .kpi-grid,
-  .stats-grid,
-  .dashboard-grid,
-  .cards-grid {
-    display: grid !important;
-    grid-template-columns: 1fr !important;
-    gap: 14px !important;
-    width: 100% !important;
-  }
-
-  .kpi-card,
-  .stat-card,
-  .card {
-    width: 100% !important;
-    min-width: 0 !important;
-    min-height: auto !important;
-    padding: 18px !important;
-    box-sizing: border-box !important;
-  }
-
-  /* Filtros apilados */
-  .section-header,
-  .toolbar,
-  .filters,
-  .table-controls {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: stretch !important;
-    gap: 10px !important;
-    width: 100% !important;
-  }
-
-  .search-input,
-  .filter-select,
-  .toolbar input,
-  .toolbar select {
-    width: 100% !important;
-    min-width: 0 !important;
-  }
-
-  /* Tabla con scroll horizontal, sin deformar toda la página */
-  .table-wrap,
-  .table-wrapper,
-  .admin-table-wrap {
-    width: 100% !important;
-    max-width: 100% !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    -webkit-overflow-scrolling: touch !important;
-    border-radius: 14px !important;
-  }
-
-  .admin-table,
-  table {
-    min-width: 980px !important;
-    width: 980px !important;
-    table-layout: auto !important;
-  }
-
-  .admin-table th,
-  .admin-table td,
-  table th,
-  table td {
-    white-space: nowrap !important;
-    padding: 12px 14px !important;
-    font-size: 13px !important;
-  }
-
-  /* Modales adaptados */
-  .modal,
-  .modal-overlay {
-    padding: 12px !important;
-  }
-
-  .modal-content,
-  .modal-box {
-    width: calc(100vw - 24px) !important;
-    max-width: calc(100vw - 24px) !important;
-    max-height: 88dvh !important;
-    overflow-y: auto !important;
-    border-radius: 18px !important;
-  }
-
-  .comprobante-img,
-  .modal-content img {
-    width: 100% !important;
-    max-width: 100% !important;
-    height: auto !important;
-    object-fit: contain !important;
-  }
-
-  /* Sidebar más compacta en móvil */
-  .sidebar-brand {
-    min-height: auto !important;
-    padding: 18px 16px !important;
-  }
-
-  .sidebar-logo,
-  .sidebar-logo-img {
-    width: 92px !important;
-    height: 92px !important;
-  }
-
-  .sidebar-brand h2,
-  .sb-name {
-    font-size: 16px !important;
-  }
-
-  .nav-item {
-    min-height: 48px !important;
-    padding: 12px 16px !important;
-  }
-}
-
-/* Pantallas pequeñas */
-@media (max-width: 480px) {
-  .section,
-  .page-section,
-  .dashboard-content,
-  .admin-content {
-    padding: 12px !important;
-  }
-
-  .topbar {
-    padding: 10px 12px !important;
-  }
-
-  .topbar h1,
-  .topbar-title,
-  #topbar-title {
-    font-size: 16px !important;
-  }
-
-  .kpi-card,
-  .stat-card,
-  .card {
-    padding: 15px !important;
-  }
-}
 .admin-main,
 .main-content,
 .content,
