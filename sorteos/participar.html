@@ -28,8 +28,8 @@
     </div>
 
     <button class="theme-toggle" id="theme-toggle" type="button"
-            onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">
-      <span id="theme-icon">🌙</span>
+            aria-label="Activar tema oscuro" aria-pressed="false" title="Cambiar tema">
+      <span id="theme-icon" aria-hidden="true">🌙</span>
     </button>
     <button class="mobile-menu-btn" id="mobile-menu-btn" type="button"
             aria-label="Abrir menú" aria-expanded="false">☰</button>
@@ -40,7 +40,7 @@
     <a href="index.html#como-participar">¿Cómo participar?</a>
     <a href="index.html#ganadores">Ganadores</a>
     <a href="mis-tickets.html">Mis Tickets</a>
-    <button type="button" onclick="toggleTheme()">🌙 Cambiar tema</button>
+    <button type="button" id="mobile-theme-toggle"><span id="mobile-theme-icon">🌙</span> Cambiar tema</button>
   </div>
 
 
@@ -60,8 +60,8 @@
       <div class="progress-label" id="progress-label">Paso 1 de 3 — <strong>Tus datos</strong></div>
 
       <!-- SORTEO ACTUAL -->
-      <div class="form-card" style="display:flex;justify-content:space-between;align-items:center;padding:14px 20px;margin-bottom:16px;background:#EFF6FF">
-        <span style="color:#64748B">Estás participando en</span>
+      <div class="form-card sorteo-actual-card">
+        <span class="sorteo-actual-label">Estás participando en</span>
         <strong id="sorteo-actual-nombre">Cargando...</strong>
       </div>
 

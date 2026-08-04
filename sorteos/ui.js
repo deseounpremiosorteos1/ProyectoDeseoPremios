@@ -1,109 +1,90 @@
-/* ============================================================
-   DESEO UN PREMIO — COMPORTAMIENTO GLOBAL
-   Cargar al final de <body>, después de los JS de cada página.
-   ============================================================ */
 (() => {
   'use strict';
 
-  const STORAGE_KEY = 'deseoUnPremioTheme';
+  const STORAGE_KEY = 'dup-theme';
 
-  function applyTheme(isDark) {
-    document.body.classList.toggle('dark-mode', isDark);
+  const getPreferredTheme = () => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved === 'dark' || saved === 'light') return saved;
 
-    document.querySelectorAll('#theme-icon, [data-theme-icon]').forEach(icon => {
-      icon.textContent = isDark ? '☀️' : '🌙';
-    });
+    return window.matchMedia &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? 'dark'
+      : 'light';
+  };
 
-    document.querySelectorAll('.theme-toggle').forEach(button => {
+  const applyTheme = (theme) => {
+    const dark = theme === 'dark';
+    document.body.classList.toggle('dark-mode', dark);
+    document.documentElement.dataset.theme = theme;
+
+    const icon = document.getElementById('theme-icon');
+    const mobileIcon = document.getElementById('mobile-theme-icon');
+    const button = document.getElementById('theme-toggle');
+
+    if (icon) icon.textContent = dark ? '☀️' : '🌙';
+    if (mobileIcon) mobileIcon.textContent = dark ? '☀️' : '🌙';
+
+    if (button) {
+      button.setAttribute('aria-pressed', String(dark));
       button.setAttribute(
         'aria-label',
-        isDark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'
+        dark ? 'Activar tema claro' : 'Activar tema oscuro'
       );
-    });
-  }
+      button.title = dark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro';
+    }
+  };
 
-  function toggleTheme() {
-    const nextDark = !document.body.classList.contains('dark-mode');
-    applyTheme(nextDark);
-    localStorage.setItem(STORAGE_KEY, nextDark ? 'dark' : 'light');
-  }
+  const setTheme = (theme) => {
+    localStorage.setItem(STORAGE_KEY, theme);
+    applyTheme(theme);
+  };
 
-  window.applyTheme = applyTheme;
-  window.toggleTheme = toggleTheme;
+  window.toggleTheme = () => {
+    const next = document.body.classList.contains('dark-mode')
+      ? 'light'
+      : 'dark';
 
-  function initTheme() {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    applyTheme(saved !== 'light');
-  }
+    setTheme(next);
+  };
 
-  function closeMobileMenu() {
-    const button = document.getElementById('mobile-menu-btn');
+  document.addEventListener('DOMContentLoaded', () => {
+    applyTheme(getPreferredTheme());
+
+    const themeButton = document.getElementById('theme-toggle');
+    const mobileThemeButton = document.getElementById('mobile-theme-toggle');
+    const menuButton = document.getElementById('mobile-menu-btn');
     const menu = document.getElementById('mobile-menu');
 
-    if (!button || !menu) return;
+    themeButton?.addEventListener('click', window.toggleTheme);
+    mobileThemeButton?.addEventListener('click', window.toggleTheme);
 
-    menu.classList.remove('active');
-    button.textContent = '☰';
-    button.setAttribute('aria-expanded', 'false');
-  }
+    const closeMenu = () => {
+      if (!menu || !menuButton) return;
+      menu.classList.remove('active');
+      menuButton.setAttribute('aria-expanded', 'false');
+    };
 
-  function initMobileMenu() {
-    const button = document.getElementById('mobile-menu-btn');
-    const menu = document.getElementById('mobile-menu');
+    menuButton?.addEventListener('click', () => {
+      if (!menu) return;
 
-    if (!button || !menu || button.dataset.menuReady === 'true') return;
-
-    button.dataset.menuReady = 'true';
-
-    button.addEventListener('click', event => {
-      event.stopPropagation();
-      const opened = menu.classList.toggle('active');
-      button.textContent = opened ? '✕' : '☰';
-      button.setAttribute('aria-expanded', String(opened));
+      const opening = !menu.classList.contains('active');
+      menu.classList.toggle('active', opening);
+      menuButton.setAttribute('aria-expanded', String(opening));
     });
 
-    menu.querySelectorAll('a, button').forEach(item => {
-      item.addEventListener('click', () => {
-        if (!item.matches('[onclick*="toggleTheme"]')) closeMobileMenu();
-      });
+    menu?.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', closeMenu);
     });
 
-    document.addEventListener('click', event => {
-      if (!menu.contains(event.target) && !button.contains(event.target)) {
-        closeMobileMenu();
-      }
-    });
-
-    document.addEventListener('keydown', event => {
-      if (event.key === 'Escape') closeMobileMenu();
+    document.addEventListener('click', (event) => {
+      if (!menu || !menuButton || !menu.classList.contains('active')) return;
+      if (menu.contains(event.target) || menuButton.contains(event.target)) return;
+      closeMenu();
     });
 
     window.addEventListener('resize', () => {
-      if (window.innerWidth > 900) closeMobileMenu();
+      if (window.innerWidth > 900) closeMenu();
     });
-  }
-
-  function preventIOSPhoneStyling() {
-    let meta = document.querySelector('meta[name="format-detection"]');
-
-    if (!meta) {
-      meta = document.createElement('meta');
-      meta.name = 'format-detection';
-      document.head.appendChild(meta);
-    }
-
-    meta.content = 'telephone=no';
-  }
-
-  function init() {
-    preventIOSPhoneStyling();
-    initTheme();
-    initMobileMenu();
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
+  });
 })();
