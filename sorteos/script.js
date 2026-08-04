@@ -223,7 +223,12 @@ async function cargarSorteosPublicos() {
   const grid = document.getElementById('sorteos-grid-public');
   if (!grid) { console.log('[carrusel] no encontré #sorteos-grid-public en el HTML'); return; }
 
-  const apiBase = window.API_BASE_URL || 'http://localhost:3001/api';
+const apiBase = window.API_BASE_URL;
+
+if (!apiBase) {
+  console.error('API_BASE_URL no está definida. Revisa config.js');
+  throw new Error('Configuración de API no disponible');
+}
   console.log('[carrusel] pidiendo:', `${apiBase}/sorteos?estado=activo`);
 
   try {
