@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="format-detection" content="telephone=no">
   <title>Mis Tickets — Deseo un Premio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -26,7 +27,23 @@
       <a href="#" class="nav-link">Soporte</a>
       <a href="mis-tickets.html" class="nav-btn active">Mis Tickets</a>
     </div>
+
+    <button class="theme-toggle" id="theme-toggle" type="button"
+            onclick="toggleTheme()" aria-label="Cambiar tema claro/oscuro">
+      <span id="theme-icon">🌙</span>
+    </button>
+    <button class="mobile-menu-btn" id="mobile-menu-btn" type="button"
+            aria-label="Abrir menú" aria-expanded="false">☰</button>
   </nav>
+
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="index.html">Sorteos</a>
+    <a href="index.html#como-participar">¿Cómo participar?</a>
+    <a href="index.html#ganadores">Ganadores</a>
+    <a href="mis-tickets.html">Mis Tickets</a>
+    <button type="button" onclick="toggleTheme()">🌙 Cambiar tema</button>
+  </div>
+
 
   <!-- MAIN -->
   <main class="main-content">
@@ -137,8 +154,8 @@
       </div>
     </div>
   </footer>
-
   <script src="config.js"></script>
   <script src="tickets.js"></script>
+  <script src="ui.js"></script>
 </body>
 </html>

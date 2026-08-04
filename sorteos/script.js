@@ -1,4 +1,3 @@
-
 // ── Countdown Timer ───────────────────────────────────────────
 // El banner "Próximo sorteo" ya NO tiene una fecha fija en el HTML:
 // se calcula solo con el sorteo ACTIVO cuya fecha_sorteo sea la más
@@ -78,7 +77,7 @@ function togglePremios(id) {
 
 // ── Copiar número Yape ────────────────────────────────────────
 function copyNumber() {
-  navigator.clipboard.writeText('926636117').then(() => {
+  navigator.clipboard.writeText('964146346').then(() => {
     const btn = document.querySelector('.btn-copy');
     const original = btn.textContent;
     btn.textContent = '✅ ¡Copiado!';
@@ -214,7 +213,7 @@ function renderSorteoCardPublico(s, destacado) {
         <span class="meta-item">⏰ ${horaStr}</span>
       </div>
       ${premiosHtml}
-      <a href="participar.html?sorteo=${s.id}" class="btn-participar">Participar →</a>
+      <a href="participar?sorteo=${s.id}" class="btn-participar">Participar →</a>
     </div>
   `;
 }
@@ -249,7 +248,17 @@ async function cargarSorteosPublicos() {
     console.log('[carrusel] listo, sorteosCarrusel.length =', sorteosCarrusel.length);
   } catch (err) {
     console.error('[carrusel] ERROR al cargar sorteos:', err);
-    grid.innerHTML = `<p class="sorteos-error">No se pudo conectar con el servidor de sorteos. Intenta de nuevo más tarde.</p>`;
+    grid.innerHTML = `
+      <div class="sorteos-error-card">
+        <div class="error-status-icon" aria-hidden="true">⌁</div>
+        <div class="error-status-copy">
+          <strong>No se pudo conectar con el servidor de sorteos.</strong>
+          <span>Intenta de nuevo más tarde.</span>
+        </div>
+        <button type="button" class="btn-reintentar" onclick="cargarSorteosPublicos()">
+          ↻ <span>Reintentar</span>
+        </button>
+      </div>`;
     ocultarControlesCarrusel();
     actualizarCountdownProximoSorteo([]);
   }
@@ -299,15 +308,8 @@ function renderCarrusel() {
   const maxIndex = Math.max(0, total - porVista);
   carruselIndex = Math.min(Math.max(carruselIndex, 0), maxIndex);
 
- const primeraCard = grid.querySelector('.sorteo-card');
-
- if (primeraCard) {
-   const estilosGrid = window.getComputedStyle(grid);
-   const gap = parseFloat(estilosGrid.columnGap || estilosGrid.gap) || 0;
-   const desplazamiento = carruselIndex * (primeraCard.offsetWidth + gap);
-
-   grid.style.transform = `translateX(-${desplazamiento}px)`;
- }
+  const pct = 100 / porVista;
+  grid.style.transform = `translateX(-${carruselIndex * pct}%)`;
 
   if (prev) prev.disabled = carruselIndex <= 0;
   if (next) next.disabled = carruselIndex >= maxIndex;
@@ -346,24 +348,3 @@ window.addEventListener('resize', () => {
   clearTimeout(resizeTimeout);
   resizeTimeout = setTimeout(renderCarrusel, 150);
 });
-
-
-const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-const mobileMenu = document.getElementById('mobile-menu');
-
-if (mobileMenuBtn && mobileMenu) {
-  mobileMenuBtn.addEventListener('click', () => {
-    const abierto = mobileMenu.classList.toggle('active');
-
-    mobileMenuBtn.textContent = abierto ? '✕' : '☰';
-    mobileMenuBtn.setAttribute('aria-expanded', String(abierto));
-  });
-
-  mobileMenu.querySelectorAll('a').forEach((enlace) => {
-    enlace.addEventListener('click', () => {
-      mobileMenu.classList.remove('active');
-      mobileMenuBtn.textContent = '☰';
-      mobileMenuBtn.setAttribute('aria-expanded', 'false');
-    });
-  });
-}

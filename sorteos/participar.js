@@ -497,7 +497,7 @@ function irPaso3() {
 
 // ── Copiar Yape ───────────────────────────────────────────────
 function copiarYape() {
-  navigator.clipboard.writeText('926636117').then(() => {
+  navigator.clipboard.writeText('964146346').then(() => {
     const btn = document.querySelector('.btn-copiar');
     btn.textContent = '✅ ¡Copiado!';
     setTimeout(() => { btn.textContent = '📋 Copiar número'; }, 2000);

@@ -597,3 +597,659 @@ body {
   object-fit: contain;
   display: block;
 }
+
+
+
+/* ============================================================
+   DISEÑO PREMIUM VERDE ESMERALDA + DORADO
+   Integrado durante la limpieza del frontend.
+   ============================================================ */
+/* ============================================================
+   DESEO UN PREMIO — DISEÑO PREMIUM VERDE ESMERALDA + DORADO
+   Cargar DESPUÉS de los CSS existentes de cada página.
+   Compatible con escritorio, Android, iPhone y tablets.
+   ============================================================ */
+
+:root {
+  --dup-green-950:#00150b;
+  --dup-green-900:#002b16;
+  --dup-green-850:#00381d;
+  --dup-green-800:#004b28;
+  --dup-green-700:#08783f;
+  --dup-green-600:#0e934d;
+  --dup-green-500:#16a85b;
+  --dup-mint:#effaf3;
+  --dup-gold:#edbb00;
+  --dup-gold-light:#ffe475;
+  --dup-gold-soft:#f5d248;
+  --dup-text:#062d18;
+  --dup-muted:#586b60;
+  --dup-surface:#ffffff;
+  --dup-page:#f4fbf6;
+  --dup-border:rgba(14,147,77,.22);
+  --dup-radius:22px;
+  --dup-shadow:0 18px 48px rgba(0,75,40,.16);
+
+  --page-bg:var(--dup-page);
+  --surface:var(--dup-surface);
+  --on-surface:var(--dup-text);
+  --sub-text:var(--dup-muted);
+  --divider:#d9eddf;
+
+  --indigo:var(--dup-green-700);
+  --indigo-light:var(--dup-green-500);
+  --indigo-dark:var(--dup-green-850);
+  --gold:var(--dup-gold);
+  --gold-light:var(--dup-gold-light);
+  --rose:var(--dup-gold);
+  --cream:var(--dup-page);
+  --cream-dark:#d9eddf;
+  --black:var(--dup-text);
+  --gray:var(--dup-muted);
+  --shadow:var(--dup-shadow);
+}
+
+body.dark-mode {
+  --page-bg:var(--dup-green-950);
+  --surface:#052b17;
+  --on-surface:#fff;
+  --sub-text:rgba(255,255,255,.74);
+  --divider:rgba(255,255,255,.11);
+  --dup-border:rgba(237,187,0,.34);
+  --dup-shadow:0 22px 58px rgba(0,0,0,.48);
+}
+
+html { background:var(--page-bg); }
+
+body {
+  background:
+    radial-gradient(circle at 12% 0, rgba(237,187,0,.07), transparent 24%),
+    radial-gradient(circle at 88% 0, rgba(22,168,91,.08), transparent 28%),
+    var(--page-bg);
+  color:var(--on-surface);
+  overflow-x:hidden;
+  transition:background .35s ease,color .35s ease;
+}
+
+/* iPhone: evita números detectados como teléfono azul */
+a[x-apple-data-detectors],
+.yape-number,
+.yape-number a {
+  color:inherit !important;
+  text-decoration:none !important;
+  -webkit-text-fill-color:currentColor !important;
+}
+
+/* ───────── NAVBAR GLOBAL ───────── */
+.navbar,
+header.navbar,
+.admin-header,
+.topbar {
+  background:
+    radial-gradient(circle at 82% 0, rgba(22,168,91,.18), transparent 32%),
+    linear-gradient(135deg,var(--dup-green-950),var(--dup-green-900) 48%,var(--dup-green-800));
+  border-top:3px solid transparent;
+  border-image:linear-gradient(90deg,#a50044,var(--dup-gold),var(--dup-green-500)) 1;
+  border-bottom:1px solid rgba(237,187,0,.28);
+  box-shadow:0 8px 28px rgba(0,24,12,.42);
+}
+
+.brand-name,.logo-text,.admin-brand {
+  color:var(--dup-gold-light) !important;
+}
+
+.nav-btn,.btn-primary,.primary-btn,.login-btn,.submit-btn {
+  background:linear-gradient(135deg,var(--dup-gold),var(--dup-gold-light)) !important;
+  color:var(--dup-text) !important;
+  border:none !important;
+  box-shadow:0 9px 26px rgba(237,187,0,.27);
+}
+
+.nav-btn:hover,.btn-primary:hover,.primary-btn:hover,.login-btn:hover,.submit-btn:hover {
+  transform:translateY(-2px);
+  box-shadow:0 14px 34px rgba(237,187,0,.42);
+}
+
+.nav-link:hover {
+  color:var(--dup-gold-light) !important;
+  background:rgba(255,255,255,.09);
+}
+
+.theme-toggle,.mobile-menu-btn {
+  border-color:rgba(237,187,0,.46) !important;
+  background:rgba(237,187,0,.08) !important;
+}
+
+/* ───────── HERO PRINCIPAL ───────── */
+.hero {
+  min-height:500px;
+  display:flex;
+  align-items:center;
+  isolation:isolate;
+  background:
+    radial-gradient(circle at 77% 45%, rgba(237,187,0,.22), transparent 23%),
+    radial-gradient(circle at 16% 34%, rgba(22,168,91,.14), transparent 29%),
+    linear-gradient(135deg,var(--dup-green-950),var(--dup-green-850) 52%,#001f10);
+  border-bottom:1px solid rgba(237,187,0,.28);
+}
+
+.hero::before {
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  background:
+    radial-gradient(circle at 8% 24%, transparent 0 78px, rgba(237,187,0,.42) 79px 81px, transparent 82px 96px, rgba(237,187,0,.22) 97px 99px, transparent 100px),
+    radial-gradient(circle at 95% 72%, transparent 0 120px, rgba(237,187,0,.36) 121px 123px, transparent 124px 144px, rgba(237,187,0,.20) 145px 147px, transparent 148px),
+    radial-gradient(circle,rgba(255,228,117,.72) 0 1px,transparent 2px) 0 0/100px 100px,
+    radial-gradient(circle,rgba(237,187,0,.40) 0 1px,transparent 2px) 40px 45px/150px 150px;
+  opacity:.48;
+  pointer-events:none;
+}
+
+.hero::after {
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  background:
+    radial-gradient(ellipse at 50% 50%,transparent 0 43%,rgba(0,21,11,.33) 100%);
+  pointer-events:none;
+}
+
+.hero-content,.hero-text,.mascot-hero { position:relative; z-index:2; }
+
+.hero-eyebrow { color:var(--dup-gold-light) !important; }
+
+.hero h1,.hero-title {
+  color:#fff !important;
+  text-shadow:0 5px 26px rgba(0,0,0,.30);
+}
+
+.accent { color:var(--dup-gold) !important; }
+
+.hero-sub,.hero p { color:rgba(255,255,255,.82) !important; }
+
+.mascot-glow {
+  background:radial-gradient(circle,rgba(237,187,0,.50),rgba(22,168,91,.15) 52%,transparent 72%) !important;
+}
+
+/* ───────── TARJETAS Y PANELES ───────── */
+.sorteo-card,
+.form-card,
+.ticket-card,
+.result-card,
+.info-card,
+.panel,
+.admin-card,
+.stat-card,
+.step,
+.yape-card,
+.countdown-card {
+  border-radius:var(--dup-radius) !important;
+  transition:transform .24s ease,box-shadow .24s ease,border-color .24s ease;
+}
+
+.sorteo-card,
+.form-card,
+.ticket-card,
+.result-card,
+.info-card,
+.panel,
+.admin-card,
+.stat-card {
+  background:
+    radial-gradient(circle at 90% 8%,rgba(237,187,0,.09),transparent 28%),
+    linear-gradient(145deg,var(--surface),color-mix(in srgb,var(--surface) 88%,var(--dup-green-500) 12%)) !important;
+  border:1px solid var(--dup-border) !important;
+  box-shadow:var(--dup-shadow) !important;
+}
+
+body.dark-mode .sorteo-card,
+body.dark-mode .form-card,
+body.dark-mode .ticket-card,
+body.dark-mode .result-card,
+body.dark-mode .info-card,
+body.dark-mode .panel,
+body.dark-mode .admin-card,
+body.dark-mode .stat-card {
+  background:
+    radial-gradient(circle at 90% 8%,rgba(237,187,0,.10),transparent 28%),
+    linear-gradient(145deg,#073a20,#021f10) !important;
+}
+
+.sorteo-card:hover,.ticket-card:hover,.admin-card:hover,.stat-card:hover {
+  transform:translateY(-5px);
+  border-color:rgba(237,187,0,.52) !important;
+  box-shadow:0 25px 62px rgba(0,75,40,.23),0 0 28px rgba(237,187,0,.10) !important;
+}
+
+.sorteo-card.featured { border-color:rgba(237,187,0,.78) !important; }
+
+.card-badge,.popular-badge,.status-badge {
+  background:linear-gradient(135deg,#075b31,var(--dup-green-500)) !important;
+  color:var(--dup-gold-light) !important;
+  border:1px solid rgba(237,187,0,.68) !important;
+  box-shadow:0 8px 22px rgba(0,75,40,.30);
+}
+
+.card-price .currency,
+.card-price .amount,
+.card-price.teal .currency,
+.card-price.teal .amount {
+  color:var(--dup-gold) !important;
+  text-shadow:0 4px 18px rgba(237,187,0,.20);
+}
+
+.meta-item,.chip,.pill {
+  background:rgba(14,147,77,.10) !important;
+  border:1px solid rgba(14,147,77,.20) !important;
+  color:var(--on-surface) !important;
+  border-radius:999px !important;
+}
+
+body.dark-mode .meta-item,
+body.dark-mode .chip,
+body.dark-mode .pill {
+  border-color:rgba(237,187,0,.14) !important;
+}
+
+.premios-toggle,.accordion-header {
+  background:linear-gradient(135deg,rgba(14,147,77,.14),rgba(237,187,0,.08)) !important;
+  border:1px solid rgba(14,147,77,.28) !important;
+  color:var(--on-surface) !important;
+}
+
+.btn-participar,.btn-confirmar,.btn-consultar,.btn-save,.btn-login {
+  background:linear-gradient(135deg,var(--dup-gold),var(--dup-gold-light)) !important;
+  color:var(--dup-text) !important;
+  border:none !important;
+  box-shadow:0 9px 27px rgba(237,187,0,.30) !important;
+}
+
+.btn-participar:hover,.btn-confirmar:hover,.btn-consultar:hover,.btn-save:hover,.btn-login:hover {
+  transform:translateY(-2px);
+  box-shadow:0 14px 36px rgba(237,187,0,.44) !important;
+}
+
+/* ───────── CÓMO PARTICIPAR ───────── */
+.como-participar,.steps-section,.dark-section {
+  background:
+    radial-gradient(circle at 50% 10%,rgba(237,187,0,.08),transparent 28%),
+    linear-gradient(160deg,var(--dup-green-950),var(--dup-green-900)) !important;
+  border-top:1px solid rgba(237,187,0,.18);
+  border-bottom:1px solid rgba(237,187,0,.18);
+}
+
+.como-participar .section-title,
+.steps-section .section-title,
+.dark-section .section-title { color:#fff !important; }
+
+.step {
+  background:rgba(255,255,255,.04) !important;
+  border:1px solid rgba(237,187,0,.32) !important;
+}
+
+.step h3 { color:var(--dup-gold) !important; }
+.step p { color:rgba(255,255,255,.76) !important; }
+
+.step-number {
+  background:linear-gradient(135deg,var(--dup-gold),var(--dup-gold-light)) !important;
+  color:var(--dup-text) !important;
+}
+
+/* ───────── YAPE / PARTICIPAR ───────── */
+.yape-card,.payment-card,.qr-panel {
+  background:
+    radial-gradient(circle at 76% 50%,rgba(237,187,0,.15),transparent 31%),
+    linear-gradient(135deg,var(--dup-green-850),var(--dup-green-700)) !important;
+  border:1px solid rgba(237,187,0,.70) !important;
+  box-shadow:0 19px 52px rgba(0,75,40,.34) !important;
+  color:#fff !important;
+}
+
+.yape-number,.payment-number {
+  color:var(--dup-gold-light) !important;
+  -webkit-text-fill-color:var(--dup-gold-light) !important;
+  text-decoration:none !important;
+}
+
+input,select,textarea {
+  border:1px solid rgba(14,147,77,.25) !important;
+  background:var(--surface) !important;
+  color:var(--on-surface) !important;
+  border-radius:14px !important;
+}
+
+input:focus,select:focus,textarea:focus {
+  outline:none !important;
+  border-color:var(--dup-gold) !important;
+  box-shadow:0 0 0 4px rgba(237,187,0,.12) !important;
+}
+
+/* ───────── MIS TICKETS ───────── */
+.ticket-number,.ticket-code,.highlight-number {
+  color:var(--dup-green-700) !important;
+}
+
+body.dark-mode .ticket-number,
+body.dark-mode .ticket-code,
+body.dark-mode .highlight-number {
+  color:var(--dup-gold-light) !important;
+}
+
+.ticket-status.approved,.status-approved {
+  background:rgba(22,168,91,.15) !important;
+  color:#0e934d !important;
+}
+
+.ticket-status.pending,.status-pending {
+  background:rgba(237,187,0,.16) !important;
+  color:#9a7400 !important;
+}
+
+/* ───────── CONTADOR ───────── */
+.countdown-card {
+  background:
+    radial-gradient(circle at 80% 20%,rgba(237,187,0,.13),transparent 30%),
+    linear-gradient(145deg,var(--dup-green-850),#001f10) !important;
+  border:1px solid rgba(237,187,0,.55) !important;
+  color:#fff !important;
+}
+
+.time-block {
+  background:linear-gradient(135deg,var(--dup-green-700),var(--dup-green-500)) !important;
+}
+
+.time-block span,.time-sep { color:var(--dup-gold-light) !important; }
+
+/* ───────── ADMIN ───────── */
+.admin-sidebar,.sidebar {
+  background:linear-gradient(180deg,var(--dup-green-950),var(--dup-green-900)) !important;
+  color:#fff !important;
+  border-right:1px solid rgba(237,187,0,.20);
+}
+
+.admin-sidebar a,.sidebar a { color:rgba(255,255,255,.82) !important; }
+
+.admin-sidebar a.active,.sidebar a.active,
+.admin-sidebar a:hover,.sidebar a:hover {
+  color:var(--dup-text) !important;
+  background:linear-gradient(135deg,var(--dup-gold),var(--dup-gold-light)) !important;
+}
+
+table {
+  background:var(--surface);
+  color:var(--on-surface);
+  border-radius:16px;
+  overflow:hidden;
+}
+
+thead {
+  background:linear-gradient(135deg,var(--dup-green-850),var(--dup-green-700)) !important;
+  color:#fff !important;
+}
+
+tbody tr:hover { background:rgba(14,147,77,.07) !important; }
+
+/* ───────── WHATSAPP ───────── */
+.btn-whatsapp,.whatsapp-float {
+  background:linear-gradient(135deg,#07a850,#21cf74) !important;
+  border:1px solid rgba(255,255,255,.25);
+  box-shadow:0 12px 34px rgba(7,168,80,.34) !important;
+}
+
+/* ───────── MENÚ MÓVIL ───────── */
+.mobile-menu-btn,.mobile-menu { display:none; }
+
+@media (max-width:900px) {
+  .nav-links { display:none !important; }
+
+  .mobile-menu-btn {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:44px;
+    height:44px;
+    flex-shrink:0;
+    color:#fff;
+    font-size:24px;
+    border-radius:12px;
+    cursor:pointer;
+  }
+
+  .mobile-menu {
+    position:fixed;
+    top:78px;
+    left:14px;
+    right:14px;
+    z-index:1200;
+    flex-direction:column;
+    gap:8px;
+    padding:14px;
+    border-radius:18px;
+    background:
+      radial-gradient(circle at 80% 0,rgba(237,187,0,.14),transparent 35%),
+      linear-gradient(160deg,var(--dup-green-950),var(--dup-green-800));
+    border:1px solid rgba(237,187,0,.30);
+    box-shadow:0 18px 48px rgba(0,0,0,.42);
+  }
+
+  .mobile-menu.active { display:flex; }
+
+  .mobile-menu a,.mobile-menu button {
+    width:100%;
+    padding:14px 16px;
+    border:0;
+    border-radius:11px;
+    background:rgba(255,255,255,.08);
+    color:#fff;
+    text-align:left;
+    text-decoration:none;
+    font:700 15px inherit;
+  }
+
+  .mobile-menu a:first-child {
+    background:linear-gradient(135deg,var(--dup-gold),var(--dup-gold-light));
+    color:var(--dup-text);
+  }
+
+  .hero {
+    min-height:auto;
+    padding:46px 18px 42px !important;
+  }
+
+  .hero::before { opacity:.30; }
+
+  .hero-content {
+    flex-direction:column;
+    text-align:center;
+    gap:24px;
+  }
+
+  .mascot-hero-img {
+    width:min(220px,62vw) !important;
+    height:auto !important;
+  }
+
+  .steps-grid,.ganadores-grid,.admin-grid {
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  }
+}
+
+@media (max-width:600px) {
+  .navbar { padding:11px 14px !important; }
+
+  .brand-name { font-size:19px !important; line-height:1.12; }
+  .brand-tagline { font-size:10px !important; line-height:1.32; }
+  .mascot-logo-img { width:52px !important; height:52px !important; }
+
+  .hero h1,.hero-title { font-size:clamp(36px,12vw,52px) !important; }
+  .hero-sub,.hero p { font-size:15px !important; }
+
+  .container { padding-left:16px !important; padding-right:16px !important; }
+
+  .sorteo-card,.form-card,.ticket-card,.result-card,.admin-card {
+    padding:24px 18px !important;
+  }
+
+  .card-header {
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) auto !important;
+    gap:12px !important;
+  }
+
+  .card-title { font-size:20px !important; overflow-wrap:anywhere; }
+  .card-price .amount { font-size:43px !important; }
+
+  .card-meta {
+    display:grid !important;
+    grid-template-columns:1fr 1fr !important;
+    gap:9px !important;
+  }
+
+  .meta-item {
+    justify-content:center;
+    padding:9px 6px !important;
+    font-size:12px !important;
+  }
+
+  .steps-grid,.ganadores-grid,.admin-grid {
+    grid-template-columns:1fr !important;
+  }
+
+  .countdown-timer {
+    width:100% !important;
+    display:flex !important;
+    justify-content:space-between !important;
+    align-items:stretch !important;
+    gap:7px !important;
+    flex-wrap:nowrap !important;
+    margin:0 !important;
+  }
+
+  .time-block {
+    flex:1 !important;
+    min-width:0 !important;
+    padding:12px 4px !important;
+  }
+
+  .time-block span { font-size:24px !important; }
+  .time-sep { display:none !important; }
+
+  .yape-card,.payment-card {
+    width:100% !important;
+    padding:25px 17px !important;
+    flex-direction:column !important;
+    text-align:center !important;
+    overflow:hidden;
+  }
+
+  .yape-number,.payment-number {
+    font-size:clamp(29px,9vw,40px) !important;
+    white-space:nowrap;
+    letter-spacing:-1px;
+  }
+
+  .qr-img,.qr-image {
+    width:100% !important;
+    max-width:220px !important;
+    height:auto !important;
+  }
+
+  .btn-whatsapp,.whatsapp-float {
+    right:16px !important;
+    bottom:16px !important;
+    width:62px !important;
+    height:62px !important;
+  }
+
+  table { min-width:680px; }
+  .table-wrapper { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+}
+
+/* Respeta usuarios con reducción de movimiento */
+@media (prefers-reduced-motion:reduce) {
+  *,*::before,*::after {
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;
+    scroll-behavior:auto !important;
+  }
+}
+
+
+/* Logo nuevo y continuidad visual verde */
+.sidebar-logo-img,
+.login-logo-img {
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.admin-sidebar,
+.sidebar,
+.login-page,
+.login-wrapper {
+  background:
+    radial-gradient(circle at 80% 0%, rgba(237, 187, 0, 0.08), transparent 26%),
+    linear-gradient(160deg, #00150b 0%, #002b16 100%) !important;
+}
+
+
+/* ============================================================
+   AJUSTE FINAL — LOGO CIRCULAR EN TODA LA WEB
+   ============================================================ */
+
+/* Logo pequeño del encabezado y panel administrador */
+.mascot-logo-img,
+.sidebar-logo-img,
+.login-logo-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50% !important;
+  clip-path: circle(49% at 50% 50%);
+  object-fit: cover !important;
+  object-position: center !important;
+  background: transparent !important;
+}
+
+/* Contenedores del logo pequeño */
+.mascot-mini,
+.sidebar-logo,
+.login-logo {
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+/* Logo principal del hero */
+.mascot-hero {
+  overflow: visible;
+}
+
+.mascot-hero-img {
+  border-radius: 50% !important;
+  clip-path: circle(49% at 50% 50%);
+  object-fit: cover !important;
+  object-position: center !important;
+  background: transparent !important;
+  aspect-ratio: 1 / 1;
+  transform: scale(1.02);
+  filter:
+    drop-shadow(0 0 9px rgba(255, 239, 180, 0.98))
+    drop-shadow(0 0 28px rgba(241, 194, 50, 0.76))
+    drop-shadow(0 22px 28px rgba(0, 0, 0, 0.45)) !important;
+}
+
+/* Halo circular para ocultar por completo las esquinas de la imagen original */
+.mascot-glow {
+  border-radius: 50% !important;
+  overflow: hidden;
+}
+
+/* Ajuste móvil */
+@media (max-width: 900px) {
+  .mascot-hero-img {
+    transform: scale(1);
+  }
+}

@@ -3,9 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="format-detection" content="telephone=no">
   <title>Deseo un Premio — ¡Pide tu deseo y gana!</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+
+
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -55,11 +59,18 @@
 
   <!-- HERO -->
   <section class="hero">
+    <div class="hero-ornaments" aria-hidden="true"></div>
+    <div class="hero-stars" aria-hidden="true"></div>
     <div class="hero-content">
       <div class="hero-text">
         <span class="hero-eyebrow">🎰 SORTEOS VIGENTES</span>
         <h1>Elige tu <span class="accent">sorteo</span></h1>
         <p class="hero-sub">Participa, gana y cambia tu historia. <br>¡Frota la lámpara y gana los mejores premios del Perú!</p>
+        <a href="#sorteos" class="hero-cta">
+          <span class="hero-cta-icon">✦</span>
+          <span>Ver sorteos activos</span>
+          <span class="hero-cta-arrow">→</span>
+        </a>
       </div>
       <div class="mascot-hero">
         <div class="mascot-glow"></div>
@@ -277,8 +288,8 @@
     </svg>
     <span>¿Consultas? ¡Escríbenos!</span>
   </a>
-
   <script src="config.js"></script>
   <script src="script.js"></script>
+  <script src="ui.js"></script>
 </body>
 </html>
