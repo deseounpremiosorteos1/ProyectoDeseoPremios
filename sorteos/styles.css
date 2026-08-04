@@ -2139,68 +2139,211 @@ tbody tr:hover { background:rgba(14,147,77,.07) !important; }
 }
 
 /* Ajuste móvil */
-@media (max-width: 900px) {
-  .mascot-hero-img {
-    transform: scale(1);
-  }
-}
 @media (max-width: 600px) {
+  /* Evita que el carrusel y la tarjeta se salgan del ancho */
+  .sorteos-section {
+    padding: 18px 12px 42px !important;
+    overflow-x: hidden !important;
+  }
+
+  .sorteos-section .container {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .sorteos-carousel {
+    width: 100% !important;
+    gap: 0 !important;
+  }
+
+  .sorteos-carousel-viewport {
+    width: 100% !important;
+    padding: 18px 0 26px !important;
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
+  }
+
+  .sorteos-grid {
+    width: 100% !important;
+  }
+
+  .sorteos-grid .sorteo-card {
+    flex: 0 0 calc(100% - 16px) !important;
+    width: calc(100% - 16px) !important;
+    max-width: calc(100% - 16px) !important;
+    min-width: 0 !important;
+    margin: 0 8px !important;
+  }
+
+  /* Tarjeta */
+  .sorteo-card {
+    padding: 30px 18px 22px !important;
+    border-radius: 24px !important;
+    overflow: visible !important;
+  }
+
+  /* El encabezado móvil va en una sola columna */
+  .card-header {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    gap: 18px !important;
+    margin-bottom: 18px !important;
+  }
+
+  .card-header > * {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  /* Título limpio, sin cortar palabras */
+  .card-title {
+    width: 100% !important;
+    margin: 0 0 10px !important;
+    font-size: clamp(25px, 7.5vw, 31px) !important;
+    line-height: 1.16 !important;
+    letter-spacing: -0.6px !important;
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
+  }
+
+  .card-desc {
+    width: 100% !important;
+    margin: 0 !important;
+    font-size: 15px !important;
+    line-height: 1.5 !important;
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+  }
+
+  /* Precio como bloque ordenado */
   .card-price,
   .card-price.teal {
     width: 100% !important;
+    min-height: 104px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 14px !important;
+    gap: 10px !important;
     padding: 18px 14px !important;
-    box-sizing: border-box !important;
     text-align: center !important;
+    border-radius: 20px !important;
+    background:
+      radial-gradient(circle at 50% 0, rgba(237,187,0,.12), transparent 58%),
+      rgba(255,255,255,.025) !important;
+    border: 1px solid rgba(237,187,0,.20) !important;
   }
 
-  /* Agrupa S/ y 30 en una misma línea sin montarse */
   .card-price .currency,
-  .card-price .amount {
+  .card-price .amount,
+  .card-price .per-ticket {
     position: static !important;
     inset: auto !important;
     transform: none !important;
     float: none !important;
-    display: inline-block !important;
-    vertical-align: baseline !important;
     grid-area: auto !important;
     margin: 0 !important;
   }
 
   .card-price .currency {
+    display: inline-block !important;
     font-size: 20px !important;
     line-height: 1 !important;
     font-weight: 800 !important;
+    align-self: center !important;
   }
 
   .card-price .amount {
-    font-size: 48px !important;
-    line-height: 1 !important;
+    display: inline-block !important;
+    font-size: 50px !important;
+    line-height: .92 !important;
     font-weight: 900 !important;
+    letter-spacing: -1px !important;
   }
 
   .card-price .per-ticket {
-    position: static !important;
-    inset: auto !important;
-    transform: none !important;
     display: inline-block !important;
-    grid-area: auto !important;
-    margin: 0 0 0 4px !important;
-    max-width: 80px !important;
+    max-width: 76px !important;
     font-size: 11px !important;
-    line-height: 1.15 !important;
+    line-height: 1.2 !important;
     text-align: left !important;
     white-space: normal !important;
+  }
+
+  /* Fecha y hora apiladas para que respiren mejor */
+  .card-meta {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    margin: 18px 0 16px !important;
+  }
+
+  .meta-item {
+    width: 100% !important;
+    min-height: 54px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 8px !important;
+    padding: 12px 14px !important;
+    font-size: 14px !important;
+    white-space: normal !important;
+  }
+
+  /* Desplegable y botón */
+  .premios-toggle {
+    width: 100% !important;
+    min-height: 58px !important;
+    margin-bottom: 14px !important;
+    padding: 14px 16px !important;
+    border-radius: 16px !important;
+    font-size: 15px !important;
+  }
+
+  .btn-participar {
+    width: 100% !important;
+    min-height: 66px !important;
+    padding: 16px !important;
+    border-radius: 16px !important;
+    font-size: 18px !important;
+  }
+
+  /* Badge */
+  .card-badge {
+    top: -14px !important;
+    left: 18px !important;
+    max-width: calc(100% - 36px) !important;
+    padding: 7px 14px !important;
+    font-size: 12px !important;
+    white-space: nowrap !important;
+  }
+
+  /* Las flechas no deben tapar la tarjeta */
+  .carousel-arrow {
+    display: none !important;
   }
 }
 
 @media (max-width: 390px) {
-  .card-price,
-  .card-price.teal {
-    gap: 10px !important;
+  .sorteo-card {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  .card-title {
+    font-size: 24px !important;
+  }
+
+  .card-price {
+    gap: 8px !important;
     padding-left: 10px !important;
     padding-right: 10px !important;
   }
@@ -2210,11 +2353,11 @@ tbody tr:hover { background:rgba(14,147,77,.07) !important; }
   }
 
   .card-price .amount {
-    font-size: 43px !important;
+    font-size: 44px !important;
   }
 
   .card-price .per-ticket {
-    max-width: 66px !important;
+    max-width: 68px !important;
     font-size: 10px !important;
   }
 }
