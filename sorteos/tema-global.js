@@ -1,109 +1,115 @@
-/* ============================================================
-   DESEO UN PREMIO — COMPORTAMIENTO GLOBAL
-   Cargar al final de <body>, después de los JS de cada página.
-   ============================================================ */
 (() => {
   'use strict';
 
-  const STORAGE_KEY = 'deseoUnPremioTheme';
+  const STORAGE_KEY = 'dup-theme';
 
-  function applyTheme(isDark) {
-    document.body.classList.toggle('dark-mode', isDark);
+  function savedTheme() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    return saved === 'dark' || saved === 'light' ? saved : 'light';
+  }
 
-    document.querySelectorAll('#theme-icon, [data-theme-icon]').forEach(icon => {
-      icon.textContent = isDark ? '☀️' : '🌙';
-    });
+  function applyTheme(theme) {
+    const dark = theme === 'dark';
 
-    document.querySelectorAll('.theme-toggle').forEach(button => {
-      button.setAttribute(
+    document.body.classList.toggle('dark-mode', dark);
+    document.documentElement.classList.toggle('dark-mode', dark);
+    document.documentElement.dataset.theme = theme;
+
+    const desktopIcon = document.getElementById('theme-icon');
+    const mobileIcon = document.getElementById('mobile-theme-icon');
+    const desktopButton = document.getElementById('theme-toggle');
+
+    if (desktopIcon) desktopIcon.textContent = dark ? '☀️' : '🌙';
+    if (mobileIcon) mobileIcon.textContent = dark ? '☀️' : '🌙';
+
+    if (desktopButton) {
+      desktopButton.setAttribute('aria-pressed', String(dark));
+      desktopButton.setAttribute(
         'aria-label',
-        isDark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'
+        dark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'
       );
-    });
+      desktopButton.title = dark
+        ? 'Cambiar a tema claro'
+        : 'Cambiar a tema oscuro';
+    }
   }
 
   function toggleTheme() {
-    const nextDark = !document.body.classList.contains('dark-mode');
-    applyTheme(nextDark);
-    localStorage.setItem(STORAGE_KEY, nextDark ? 'dark' : 'light');
+    const nextTheme = document.body.classList.contains('dark-mode')
+      ? 'light'
+      : 'dark';
+
+    localStorage.setItem(STORAGE_KEY, nextTheme);
+    applyTheme(nextTheme);
   }
 
-  window.applyTheme = applyTheme;
   window.toggleTheme = toggleTheme;
 
-  function initTheme() {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    applyTheme(saved !== 'light');
-  }
+  function initialize() {
+    applyTheme(savedTheme());
 
-  function closeMobileMenu() {
-    const button = document.getElementById('mobile-menu-btn');
-    const menu = document.getElementById('mobile-menu');
+    const desktopThemeButton = document.getElementById('theme-toggle');
+    const mobileThemeButton = document.getElementById('mobile-theme-toggle');
+    const menuButton = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
 
-    if (!button || !menu) return;
+    /*
+     * Se usa onclick por asignación, no addEventListener, para evitar que
+     * scripts antiguos registren el evento dos veces.
+     */
+    if (desktopThemeButton) {
+      desktopThemeButton.onclick = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        toggleTheme();
+      };
+    }
 
-    menu.classList.remove('active');
-    button.textContent = '☰';
-    button.setAttribute('aria-expanded', 'false');
-  }
+    if (mobileThemeButton) {
+      mobileThemeButton.onclick = (event) => {
+        event.preventDefault();
+        toggleTheme();
+      };
+    }
 
-  function initMobileMenu() {
-    const button = document.getElementById('mobile-menu-btn');
-    const menu = document.getElementById('mobile-menu');
+    function closeMenu() {
+      if (!mobileMenu || !menuButton) return;
+      mobileMenu.classList.remove('active');
+      menuButton.setAttribute('aria-expanded', 'false');
+    }
 
-    if (!button || !menu || button.dataset.menuReady === 'true') return;
+    if (menuButton) {
+      menuButton.onclick = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
 
-    button.dataset.menuReady = 'true';
+        if (!mobileMenu) return;
 
-    button.addEventListener('click', event => {
-      event.stopPropagation();
-      const opened = menu.classList.toggle('active');
-      button.textContent = opened ? '✕' : '☰';
-      button.setAttribute('aria-expanded', String(opened));
+        const willOpen = !mobileMenu.classList.contains('active');
+        mobileMenu.classList.toggle('active', willOpen);
+        menuButton.setAttribute('aria-expanded', String(willOpen));
+      };
+    }
+
+    mobileMenu?.querySelectorAll('a').forEach((link) => {
+      link.onclick = closeMenu;
     });
 
-    menu.querySelectorAll('a, button').forEach(item => {
-      item.addEventListener('click', () => {
-        if (!item.matches('[onclick*="toggleTheme"]')) closeMobileMenu();
-      });
-    });
-
-    document.addEventListener('click', event => {
-      if (!menu.contains(event.target) && !button.contains(event.target)) {
-        closeMobileMenu();
-      }
-    });
-
-    document.addEventListener('keydown', event => {
-      if (event.key === 'Escape') closeMobileMenu();
+    document.addEventListener('click', (event) => {
+      if (!mobileMenu || !menuButton) return;
+      if (!mobileMenu.classList.contains('active')) return;
+      if (mobileMenu.contains(event.target) || menuButton.contains(event.target)) return;
+      closeMenu();
     });
 
     window.addEventListener('resize', () => {
-      if (window.innerWidth > 900) closeMobileMenu();
+      if (window.innerWidth > 900) closeMenu();
     });
   }
 
-  function preventIOSPhoneStyling() {
-    let meta = document.querySelector('meta[name="format-detection"]');
-
-    if (!meta) {
-      meta = document.createElement('meta');
-      meta.name = 'format-detection';
-      document.head.appendChild(meta);
-    }
-
-    meta.content = 'telephone=no';
-  }
-
-  function init() {
-    preventIOSPhoneStyling();
-    initTheme();
-    initMobileMenu();
-  }
-
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', initialize, { once: true });
   } else {
-    init();
+    initialize();
   }
 })();
