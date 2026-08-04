@@ -308,8 +308,12 @@ function verComp(id) {
 
   // El servidor real solo guarda el nombre del archivo (ruta_archivo);
   // la URL pública se arma acá, apuntando a /uploads/ del propio backend.
-  const urlArchivo = c.ruta_archivo
-    ? `${API_BASE.replace(/\/api\/?$/, '')}/uploads/${c.ruta_archivo}`
+const urlArchivo = c.ruta_archivo
+    ? (
+        c.ruta_archivo.startsWith("http")
+            ? c.ruta_archivo
+            : `${API_BASE.replace(/\/api\/?$/, '')}/uploads/${c.ruta_archivo}`
+      )
     : null;
 
   document.getElementById('modal-comp-title').textContent = `Comprobante de ${c.nombres} ${c.apellidos}`;
