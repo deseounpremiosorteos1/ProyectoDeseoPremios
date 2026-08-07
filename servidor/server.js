@@ -494,33 +494,73 @@ app.delete('/api/sorteos/:id', requiereAdmin, async (req, res) => {
 
 app.get('/api/tickets/:documento', async (req, res) => {
   try {
-    const resultado = await pool.query(
-      'SELECT * FROM vista_tickets_participante WHERE documento = $1',
+    const participanteResultado = await pool.query(
+      `SELECT id, nombres, apellidos
+       FROM participantes
+       WHERE documento = $1
+       LIMIT 1`,
       [req.params.documento]
     );
 
-    if (resultado.rows.length === 0) {
+    const participante = participanteResultado.rows[0];
+
+    if (!participante) {
       return res.json({ encontrado: false });
     }
 
-    const primeraFila = resultado.rows[0];
+    const comprasResultado = await pool.query(
+      `SELECT
+         c.id,
+         c.estado,
+         c.cantidad,
+         c.monto,
+         c.subido_en AS fecha_compra,
+         s.nombre AS sorteo,
+         s.premio,
+         s.premios,
+         s.fecha_sorteo,
+         COALESCE(
+           ARRAY_AGG(t.numero ORDER BY t.numero)
+             FILTER (WHERE t.id IS NOT NULL),
+           ARRAY[]::varchar[]
+         ) AS tickets
+       FROM comprobantes c
+       JOIN sorteos s ON s.id = c.sorteo_id
+       LEFT JOIN tickets t ON t.comprobante_id = c.id
+       WHERE c.participante_id = $1
+       GROUP BY c.id, s.id
+       ORDER BY c.subido_en DESC`,
+      [participante.id]
+    );
+
+    const compras = comprasResultado.rows.map((fila) => {
+      const listaPremios = Array.isArray(fila.premios)
+        ? fila.premios.filter(Boolean)
+        : [];
+
+      return {
+        id: fila.id,
+        estado: fila.estado,
+        cantidad: Number(fila.cantidad || 0),
+        monto: Number(fila.monto || 0),
+        fecha_compra: fila.fecha_compra,
+        sorteo: fila.sorteo,
+        premio: listaPremios[0] || fila.premio || 'Premio del sorteo',
+        fecha_sorteo: fila.fecha_sorteo,
+        tickets: fila.tickets || [],
+      };
+    });
 
     return res.json({
       encontrado: true,
-      nombre: `${primeraFila.nombres} ${primeraFila.apellidos}`,
-      totalTickets: resultado.rows.reduce(
-        (total, fila) => total + Number(fila.total_tickets),
-        0
-      ),
-      sorteos: resultado.rows.map((fila) => ({
-        nombre: fila.sorteo_nombre,
-        fecha: fila.fecha_sorteo,
-        tickets: fila.tickets,
-      })),
+      nombre: `${participante.nombres} ${participante.apellidos}`.trim(),
+      compras,
     });
   } catch (error) {
-    console.error('Error al consultar tickets:', error);
-    return res.status(500).json({ error: 'Error al consultar tickets' });
+    console.error('Error al consultar historial de tickets:', error);
+    return res.status(500).json({
+      error: 'Error al consultar el historial de tickets',
+    });
   }
 });
 
