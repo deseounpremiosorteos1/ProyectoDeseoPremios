@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="format-detection" content="telephone=no">
+  <title>Estado de tu compra — Deseo un Premio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="estado-compra.css">
+</head>
+<body>
+  <nav class="navbar">
+    <a class="nav-brand" href="index.html" aria-label="Volver al inicio">
+      <img src="assets/logo.png" alt="Deseo un Premio" class="nav-logo">
+      <div>
+        <div class="brand-name">Deseo un Premio</div>
+        <div class="brand-tagline">¡Tu deseo está a un ticket de distancia!</div>
+      </div>
+    </a>
+
+    <div class="nav-links">
+      <a href="index.html#sorteos">Sorteos</a>
+      <a href="index.html#como-participar">¿Cómo participar?</a>
+      <a href="index.html#ganadores">Ganadores</a>
+      <a href="mis-tickets.html">Mis Tickets</a>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Cambiar tema">
+        <span id="theme-icon">🌙</span>
+      </button>
+    </div>
+
+    <button class="mobile-menu-btn" id="mobile-menu-btn" type="button"
+            aria-label="Abrir menú" aria-expanded="false">☰</button>
+  </nav>
+
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="index.html#sorteos">Sorteos</a>
+    <a href="index.html#como-participar">¿Cómo participar?</a>
+    <a href="index.html#ganadores">Ganadores</a>
+    <a href="mis-tickets.html">Mis Tickets</a>
+    <button type="button" id="mobile-theme-toggle">
+      <span id="mobile-theme-icon">🌙</span> Cambiar tema
+    </button>
+  </div>
+
+  <main class="page-shell">
+    <a href="index.html" class="back-link">← Volver al inicio</a>
+
+    <section class="purchase-card" id="purchase-card">
+      <div class="popular-badge">🔥 MÁS POPULAR</div>
+
+      <div class="purchase-top">
+        <div class="purchase-copy">
+          <span class="eyebrow">SEGUIMIENTO DE COMPRA</span>
+          <h1 id="sorteo-nombre">Cargando tu compra...</h1>
+          <p class="premio" id="sorteo-premio">🏆 Premio del sorteo</p>
+        </div>
+
+        <div class="price-box">
+          <span class="currency">S/</span>
+          <strong id="monto">--</strong>
+          <span class="price-caption">TOTAL</span>
+        </div>
+      </div>
+
+      <div class="meta-grid">
+        <div class="meta-pill">🎟 <strong id="cantidad">--</strong> ticket(s)</div>
+        <div class="meta-pill">📅 <span id="fecha-sorteo">--</span></div>
+      </div>
+
+      <div class="status-panel pendiente" id="status-panel">
+        <div class="status-icon" id="status-icon">⏳</div>
+        <div>
+          <span class="status-kicker">ESTADO DE TU PARTICIPACIÓN</span>
+          <h2 id="status-title">Ticket Pendiente</h2>
+          <p id="status-description">
+            Estamos validando tu comprobante. No necesitas volver a registrarte.
+          </p>
+        </div>
+      </div>
+
+      <div class="tickets-section" id="tickets-section" hidden>
+        <div class="tickets-heading">
+          <div>
+            <span class="status-kicker">TUS NÚMEROS</span>
+            <h3>Tickets asignados</h3>
+          </div>
+          <span class="approved-pill">✓ APROBADO</span>
+        </div>
+        <div class="tickets-grid" id="tickets-grid"></div>
+      </div>
+
+      <div class="status-actions">
+        <button type="button" class="btn-refresh" id="btn-refresh">↻ Actualizar estado</button>
+        <a href="mis-tickets.html" class="btn-secondary">Mis Tickets</a>
+      </div>
+
+      <p class="auto-refresh">El estado se actualiza automáticamente cada 15 segundos.</p>
+    </section>
+
+    <section class="help-card">
+      <span>¿Tienes alguna consulta sobre tu pago?</span>
+      <a href="https://wa.me/51964146346" target="_blank" rel="noopener">💬 Hablar por WhatsApp</a>
+    </section>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="estado-compra.js"></script>
+  <script src="tema-global.js"></script>
+</body>
+</html>

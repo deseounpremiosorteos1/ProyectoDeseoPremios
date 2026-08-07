@@ -12,6 +12,7 @@ let sorteoSeleccionado = null;
 let archivoComprobante = null;
 let sorteosDisponibles = [];
 let enviandoComprobante = false;
+let comprobanteRegistradoId = null;
 
 const PRECIO_TICKET_DEFAULT = 60;
 
@@ -459,7 +460,9 @@ async function enviarComprobante() {
       throw new Error(errData.error || 'Error al subir el comprobante');
     }
 
-    setTimeout(() => irPaso3(), 800);
+    const data = await resp.json();
+    comprobanteRegistradoId = data?.comprobante?.id || null;
+    mostrarModalPagoRecibido();
   } catch (err) {
     console.error('Error al enviar comprobante:', err);
     content.innerHTML = `
@@ -473,26 +476,24 @@ async function enviarComprobante() {
   }
 }
 
-// ── Ir a Paso 3 ───────────────────────────────────────────────
-function irPaso3() {
-  const wsp = document.getElementById('wsp-input').value.trim();
+// ── Confirmación posterior al envío ─────────────────────────
+function mostrarModalPagoRecibido() {
+  const modal = document.getElementById('modal-pago-recibido');
+  if (!modal) return;
 
-  document.getElementById('paso2').style.display = 'none';
-  document.getElementById('paso3').style.display = 'block';
+  modal.classList.add('visible');
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('modal-open');
+}
 
-  document.getElementById('wsp-confirm').textContent    = `+51 ${wsp}`;
-  document.getElementById('confirm-tickets').textContent = `${cantidadTickets} ticket${cantidadTickets > 1 ? 's' : ''}`;
-  const totalConfirmado = comboActivoParaCantidad()
-    ?? cantidadTickets * (sorteoSeleccionado ? Number(sorteoSeleccionado.precio_ticket) : PRECIO_TICKET_DEFAULT);
-  document.getElementById('confirm-monto').textContent  = `S/ ${totalConfirmado}`;
-  document.getElementById('confirm-nombre').textContent = nombreCompleto;
-  actualizarNombreSorteo();
+function aceptarPagoRecibido() {
+  if (!comprobanteRegistradoId) {
+    window.location.href = 'mis-tickets.html';
+    return;
+  }
 
-  document.getElementById('prog2').classList.add('done');
-  document.getElementById('prog3').classList.add('active');
-  document.getElementById('progress-label').innerHTML = 'Paso 3 de 3 — <strong>¡Listo!</strong>';
-
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.location.href =
+    `estado-compra.html?id=${encodeURIComponent(comprobanteRegistradoId)}`;
 }
 
 // ── Copiar Yape ───────────────────────────────────────────────

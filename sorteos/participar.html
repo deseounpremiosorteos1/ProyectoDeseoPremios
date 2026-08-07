@@ -235,37 +235,28 @@
 
       </div>
 
-      <!-- ══ PASO 3: CONFIRMACIÓN ═══════════════════════════════ -->
-      <div class="form-card confirmacion" id="paso3" style="display:none">
-        <div class="confirm-icon">✅</div>
-        <h2 class="confirm-titulo">¡Comprobante enviado!</h2>
-        <p class="confirm-desc">
-          En unos minutos lo estamos validando y te confirmaremos tu ticket por WhatsApp al número <strong id="wsp-confirm"></strong>.
-        </p>
-        <div class="confirm-detalle">
-          <div class="detalle-row">
-            <span>Sorteo</span>
-            <strong id="confirm-sorteo-nombre">—</strong>
-          </div>
-          <div class="detalle-row">
-            <span>Tickets</span>
-            <strong id="confirm-tickets">1 ticket</strong>
-          </div>
-          <div class="detalle-row">
-            <span>Total pagado</span>
-            <strong id="confirm-monto">S/ 60</strong>
-          </div>
-          <div class="detalle-row">
-            <span>Participante</span>
-            <strong id="confirm-nombre"></strong>
-          </div>
-        </div>
-        <a href="mis-tickets.html" class="btn-continuar mt16">Ver mis tickets</a>
-        <a href="index.html" class="btn-volver-home">← Volver al inicio</a>
-      </div>
-
     </div>
   </main>
+
+
+  <!-- CONFIRMACIÓN: PAGO/COMPROBANTE RECIBIDO -->
+  <div class="pago-modal-overlay" id="modal-pago-recibido" aria-hidden="true">
+    <div class="pago-modal" role="dialog" aria-modal="true" aria-labelledby="pago-modal-titulo">
+      <div class="pago-check" aria-hidden="true">✓</div>
+      <h2 id="pago-modal-titulo">Pago recibido</h2>
+      <p>
+        Gracias por participar en <strong>Deseo Un Premio</strong>.
+        Estamos verificando tu comprobante de pago.
+      </p>
+      <p>
+        Apenas sea aprobado recibirás automáticamente tus números de ticket
+        mediante WhatsApp.
+      </p>
+      <button type="button" class="pago-modal-btn" onclick="aceptarPagoRecibido()">
+        Aceptar
+      </button>
+    </div>
+  </div>
 
   <!-- MODAL DE PROMOCIONES -->
   <div class="modal-overlay" id="modal-promo" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:999;align-items:center;justify-content:center" onclick="cerrarModalPromo(event)">

@@ -89,6 +89,133 @@ function requiereAdmin(req, res, next) {
   }
 }
 
+
+const whatsappConfigurado = Boolean(
+  process.env.WHATSAPP_ACCESS_TOKEN &&
+  process.env.WHATSAPP_PHONE_NUMBER_ID
+);
+
+function normalizarWhatsAppPeru(numero) {
+  const limpio = String(numero || '').replace(/\D/g, '');
+
+  if (!limpio) return '';
+  if (limpio.startsWith('51') && limpio.length >= 11) return limpio;
+  if (limpio.length === 9) return `51${limpio}`;
+
+  return limpio;
+}
+
+async function enviarPlantillaWhatsApp({
+  telefono,
+  plantilla,
+  parametros = [],
+  idioma = process.env.WHATSAPP_TEMPLATE_LANGUAGE || 'es',
+}) {
+  if (!whatsappConfigurado || !plantilla) {
+    return { omitido: true };
+  }
+
+  const destinatario = normalizarWhatsAppPeru(telefono);
+
+  if (!destinatario) {
+    return { omitido: true };
+  }
+
+  const version = process.env.WHATSAPP_API_VERSION || 'v26.0';
+  const url =
+    `https://graph.facebook.com/${version}/` +
+    `${process.env.WHATSAPP_PHONE_NUMBER_ID}/messages`;
+
+  const body = {
+    messaging_product: 'whatsapp',
+    to: destinatario,
+    type: 'template',
+    template: {
+      name: plantilla,
+      language: { code: idioma },
+      components: [
+        {
+          type: 'body',
+          parameters: parametros.map((valor) => ({
+            type: 'text',
+            text: String(valor ?? ''),
+          })),
+        },
+      ],
+    },
+  };
+
+  const respuesta = await fetch(url, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${process.env.WHATSAPP_ACCESS_TOKEN}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
+
+  const data = await respuesta.json().catch(() => ({}));
+
+  if (!respuesta.ok) {
+    console.error('Error enviando WhatsApp:', data);
+    throw new Error(data?.error?.message || 'No se pudo enviar el WhatsApp');
+  }
+
+  return data;
+}
+
+async function notificarComprobanteRecibido(datos) {
+  try {
+    return await enviarPlantillaWhatsApp({
+      telefono: datos.whatsapp,
+      plantilla: process.env.WHATSAPP_TEMPLATE_RECIBIDO,
+      parametros: [
+        datos.nombre,
+        datos.sorteo,
+        datos.cantidad,
+        `S/ ${Number(datos.monto).toFixed(2)}`,
+      ],
+    });
+  } catch (error) {
+    console.error('WhatsApp comprobante recibido:', error.message);
+    return { error: error.message };
+  }
+}
+
+async function notificarCompraAprobada(datos) {
+  try {
+    return await enviarPlantillaWhatsApp({
+      telefono: datos.whatsapp,
+      plantilla: process.env.WHATSAPP_TEMPLATE_APROBADO,
+      parametros: [
+        datos.nombre,
+        datos.sorteo,
+        datos.tickets.join(', '),
+        datos.urlEstado || '',
+      ],
+    });
+  } catch (error) {
+    console.error('WhatsApp compra aprobada:', error.message);
+    return { error: error.message };
+  }
+}
+
+async function notificarCompraRechazada(datos) {
+  try {
+    return await enviarPlantillaWhatsApp({
+      telefono: datos.whatsapp,
+      plantilla: process.env.WHATSAPP_TEMPLATE_RECHAZADO,
+      parametros: [
+        datos.nombre,
+        datos.sorteo,
+      ],
+    });
+  } catch (error) {
+    console.error('WhatsApp compra rechazada:', error.message);
+    return { error: error.message };
+  }
+}
+
 function generarNumeroTicket() {
   return String(Math.floor(100000 + Math.random() * 900000));
 }
@@ -545,7 +672,7 @@ app.post('/api/comprobantes', upload.single('archivo'), async (req, res) => {
     await cliente.query('BEGIN');
 
     const sorteoResultado = await cliente.query(
-      `SELECT id, precio_ticket, estado
+      `SELECT id, nombre, premio, premios, fecha_sorteo, precio_ticket, estado
        FROM sorteos
        WHERE id = $1
        LIMIT 1`,
@@ -657,9 +784,22 @@ app.post('/api/comprobantes', upload.single('archivo'), async (req, res) => {
 
     await cliente.query('COMMIT');
 
+    const comprobanteCreado = comprobanteResultado.rows[0];
+
+    // El WhatsApp es una notificación adicional: si Meta está temporalmente
+    // indisponible, la compra igualmente queda registrada.
+    void notificarComprobanteRecibido({
+      whatsapp,
+      nombre: `${nombres} ${apellidos}`.trim(),
+      sorteo: sorteo.nombre,
+      cantidad: cantidadTickets,
+      monto,
+    });
+
     return res.status(201).json({
       ok: true,
-      comprobante: comprobanteResultado.rows[0],
+      comprobante: comprobanteCreado,
+      seguimiento_url: `/estado-compra.html?id=${comprobanteCreado.id}`,
     });
   } catch (error) {
     await cliente.query('ROLLBACK');
@@ -677,6 +817,67 @@ app.post('/api/comprobantes', upload.single('archivo'), async (req, res) => {
     });
   } finally {
     cliente.release();
+  }
+});
+
+
+app.get('/api/comprobantes/:id/estado', async (req, res) => {
+  try {
+    const resultado = await pool.query(
+      `SELECT
+         c.id,
+         c.estado,
+         c.cantidad,
+         c.monto,
+         c.subido_en,
+         p.nombres,
+         p.apellidos,
+         s.nombre AS sorteo_nombre,
+         s.premio AS sorteo_premio,
+         s.premios AS sorteo_premios,
+         s.fecha_sorteo,
+         COALESCE(
+           ARRAY_AGG(t.numero ORDER BY t.numero)
+             FILTER (WHERE t.id IS NOT NULL),
+           ARRAY[]::varchar[]
+         ) AS tickets
+       FROM comprobantes c
+       JOIN participantes p ON p.id = c.participante_id
+       JOIN sorteos s ON s.id = c.sorteo_id
+       LEFT JOIN tickets t ON t.comprobante_id = c.id
+       WHERE c.id = $1
+       GROUP BY c.id, p.id, s.id
+       LIMIT 1`,
+      [req.params.id]
+    );
+
+    const compra = resultado.rows[0];
+
+    if (!compra) {
+      return res.status(404).json({ error: 'Compra no encontrada' });
+    }
+
+    const listaPremios = Array.isArray(compra.sorteo_premios)
+      ? compra.sorteo_premios.filter(Boolean)
+      : [];
+
+    return res.json({
+      id: compra.id,
+      estado: compra.estado,
+      cantidad: Number(compra.cantidad),
+      monto: Number(compra.monto),
+      subido_en: compra.subido_en,
+      participante: `${compra.nombres} ${compra.apellidos}`.trim(),
+      sorteo: {
+        nombre: compra.sorteo_nombre,
+        premio: listaPremios[0] || compra.sorteo_premio || 'Premio del sorteo',
+        fecha: compra.fecha_sorteo,
+      },
+      tickets: compra.tickets || [],
+    });
+  } catch (error) {
+    console.error('Error al consultar estado de compra:', error);
+    return res.status(500).json({ error: 'Error al consultar el estado de la compra' });
   }
 });
 
@@ -725,10 +926,17 @@ app.post(
       await cliente.query('BEGIN');
 
       const comprobanteResultado = await cliente.query(
-        `SELECT *
-         FROM comprobantes
-         WHERE id = $1
-         FOR UPDATE`,
+        `SELECT
+           c.*,
+           p.nombres,
+           p.apellidos,
+           p.whatsapp,
+           s.nombre AS sorteo_nombre
+         FROM comprobantes c
+         JOIN participantes p ON p.id = c.participante_id
+         JOIN sorteos s ON s.id = c.sorteo_id
+         WHERE c.id = $1
+         FOR UPDATE OF c`,
         [req.params.id]
       );
 
@@ -785,6 +993,18 @@ app.post(
 
       await cliente.query('COMMIT');
 
+      const urlEstado = process.env.FRONTEND_PUBLIC_URL
+        ? `${process.env.FRONTEND_PUBLIC_URL.replace(/\/$/, '')}/estado-compra.html?id=${comprobante.id}`
+        : '';
+
+      void notificarCompraAprobada({
+        whatsapp: comprobante.whatsapp,
+        nombre: `${comprobante.nombres} ${comprobante.apellidos}`.trim(),
+        sorteo: comprobante.sorteo_nombre,
+        tickets: ticketsCreados.map((ticket) => ticket.numero),
+        urlEstado,
+      });
+
       return res.json({
         ok: true,
         tickets: ticketsCreados,
@@ -807,6 +1027,16 @@ app.post(
   requiereAdmin,
   async (req, res) => {
     try {
+      const previo = await pool.query(
+        `SELECT c.id, p.nombres, p.apellidos, p.whatsapp, s.nombre AS sorteo_nombre
+         FROM comprobantes c
+         JOIN participantes p ON p.id = c.participante_id
+         JOIN sorteos s ON s.id = c.sorteo_id
+         WHERE c.id = $1
+         LIMIT 1`,
+        [req.params.id]
+      );
+
       const resultado = await pool.query(
         `UPDATE comprobantes
          SET estado = 'rechazado',
@@ -818,6 +1048,15 @@ app.post(
 
       if (!resultado.rows[0]) {
         return res.status(404).json({ error: 'Comprobante no encontrado' });
+      }
+
+      const datos = previo.rows[0];
+      if (datos) {
+        void notificarCompraRechazada({
+          whatsapp: datos.whatsapp,
+          nombre: `${datos.nombres} ${datos.apellidos}`.trim(),
+          sorteo: datos.sorteo_nombre,
+        });
       }
 
       return res.json({

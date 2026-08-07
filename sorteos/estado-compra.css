@@ -1,0 +1,499 @@
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+:root {
+  --green-950: #00170c;
+  --green-900: #002613;
+  --green-800: #004326;
+  --green-700: #076f3d;
+  --green-500: #13b85c;
+  --gold: #edbb00;
+  --gold-light: #ffe276;
+  --cream: #f3fbf5;
+  --ink: #0c2417;
+  --muted: #64746a;
+  --card: #ffffff;
+  --line: rgba(0, 82, 43, .14);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 80% 0, rgba(39, 203, 112, .11), transparent 32%),
+    linear-gradient(180deg, #f8fcf8, #edf8f1);
+  font-family: 'Inter', sans-serif;
+}
+
+.navbar {
+  min-height: 92px;
+  padding: 12px clamp(18px, 4vw, 52px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background:
+    radial-gradient(circle at 82% 0, rgba(22,168,91,.18), transparent 32%),
+    linear-gradient(135deg, #00150b, #002b16 52%, #004b28);
+  border-bottom: 1px solid rgba(237,187,0,.45);
+  box-shadow: 0 8px 28px rgba(0, 24, 12, .28);
+}
+
+.navbar::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: linear-gradient(90deg, #a50044, #edbb00, #16a85b);
+}
+
+.nav-brand {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.nav-logo {
+  width: 58px;
+  height: 58px;
+  object-fit: cover;
+  border-radius: 50%;
+  filter: drop-shadow(0 0 12px rgba(237,187,0,.35));
+}
+
+.brand-name {
+  color: #f7c928;
+  font: 900 clamp(18px, 2vw, 25px) 'Poppins', sans-serif;
+  white-space: nowrap;
+}
+
+.brand-tagline {
+  margin-top: 1px;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-links a,
+.theme-toggle {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 10px 14px;
+  border-radius: 999px;
+}
+
+.nav-links a:hover { background: rgba(255,255,255,.08); }
+
+.theme-toggle {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(237,187,0,.55);
+  background: rgba(237,187,0,.07);
+  cursor: pointer;
+}
+
+.mobile-menu-btn,
+.mobile-menu { display: none; }
+
+.page-shell {
+  width: min(980px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 42px 0 80px;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 18px;
+  color: #557063;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.purchase-card {
+  position: relative;
+  overflow: visible;
+  padding: clamp(28px, 4vw, 44px);
+  border-radius: 28px;
+  color: #fff;
+  background:
+    radial-gradient(circle at 85% 10%, rgba(237,187,0,.12), transparent 30%),
+    linear-gradient(145deg, #00301a, #004727 52%, #002e18);
+  border: 1px solid rgba(237,187,0,.55);
+  box-shadow: 0 30px 70px rgba(0, 51, 27, .22);
+}
+
+.popular-badge {
+  position: absolute;
+  left: 26px;
+  top: -16px;
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #0a9848, #16b65c);
+  border: 1px solid var(--gold);
+  color: #ffe478;
+  font: 800 13px 'Poppins', sans-serif;
+  letter-spacing: .05em;
+}
+
+.purchase-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 24px;
+  align-items: start;
+}
+
+.eyebrow,
+.status-kicker {
+  display: block;
+  color: #f5cf45;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .13em;
+}
+
+.purchase-copy h1 {
+  margin: 7px 0 8px;
+  font: 800 clamp(28px, 5vw, 46px) 'Poppins', sans-serif;
+  line-height: 1.08;
+}
+
+.premio {
+  margin: 0;
+  color: #d3e5da;
+  font-size: clamp(15px, 2vw, 18px);
+}
+
+.price-box {
+  min-width: 150px;
+  padding: 16px 18px;
+  border-radius: 20px;
+  text-align: center;
+  border: 1px solid rgba(237,187,0,.28);
+  background: rgba(0, 19, 10, .34);
+}
+
+.currency { color: var(--gold); font: 800 25px 'Poppins', sans-serif; }
+.price-box strong { color: #ffc400; font: 900 54px/1 'Poppins', sans-serif; }
+.price-caption {
+  display: block;
+  margin-top: 4px;
+  color: #d7e5dd;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+
+.meta-grid {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 26px 0 22px;
+}
+
+.meta-pill {
+  padding: 9px 14px;
+  border-radius: 999px;
+  color: #eefaf2;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(237,187,0,.22);
+  font-size: 14px;
+}
+
+.status-panel {
+  display: grid;
+  grid-template-columns: 62px 1fr;
+  gap: 18px;
+  align-items: center;
+  padding: 22px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,.12);
+}
+
+.status-panel.pendiente { background: rgba(237,187,0,.10); }
+.status-panel.aprobado { background: rgba(30, 210, 111, .13); }
+.status-panel.rechazado { background: rgba(237, 75, 75, .13); }
+
+.status-icon {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 30px;
+  background: rgba(255,255,255,.10);
+}
+
+.status-panel h2 {
+  margin: 4px 0 5px;
+  font: 800 clamp(22px, 4vw, 30px) 'Poppins', sans-serif;
+}
+
+.status-panel p {
+  margin: 0;
+  color: #d4e5db;
+  line-height: 1.55;
+}
+
+.tickets-section {
+  margin-top: 22px;
+  padding: 22px;
+  border-radius: 20px;
+  background: #f8fffa;
+  color: #092718;
+}
+
+.tickets-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 16px;
+}
+
+.tickets-heading h3 {
+  margin: 4px 0 0;
+  font: 800 22px 'Poppins', sans-serif;
+}
+
+.approved-pill {
+  padding: 7px 11px;
+  border-radius: 999px;
+  background: #d9fbe6;
+  color: #08783f;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.tickets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.ticket-number {
+  padding: 16px 12px;
+  border-radius: 14px;
+  text-align: center;
+  color: #00381d;
+  background: linear-gradient(135deg, #fff0a8, #ffd944);
+  border: 1px solid #e4b000;
+  font: 900 21px 'Poppins', sans-serif;
+  letter-spacing: .05em;
+}
+
+.status-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.btn-refresh,
+.btn-secondary {
+  min-height: 52px;
+  border-radius: 13px;
+  display: grid;
+  place-items: center;
+  font: 800 14px 'Poppins', sans-serif;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.btn-refresh {
+  border: 0;
+  color: #08371f;
+  background: linear-gradient(135deg, #f7c80d, #ffe167);
+}
+
+.btn-secondary {
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.20);
+  background: rgba(255,255,255,.08);
+}
+
+.auto-refresh {
+  margin: 12px 0 0;
+  color: #9fb9aa;
+  text-align: center;
+  font-size: 12px;
+}
+
+.help-card {
+  margin-top: 18px;
+  padding: 18px 22px;
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(255,255,255,.82);
+  box-shadow: 0 10px 28px rgba(0, 51, 27, .07);
+}
+
+.help-card span { color: var(--muted); font-weight: 600; }
+.help-card a {
+  padding: 11px 16px;
+  border-radius: 999px;
+  text-decoration: none;
+  color: #fff;
+  background: #13b85c;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+/* Tema oscuro */
+html.dark-mode body,
+body.dark-mode {
+  background: #00180d;
+  color: #eef9f2;
+}
+
+html.dark-mode .help-card,
+body.dark-mode .help-card {
+  background: #002a17;
+  border-color: rgba(237,187,0,.20);
+}
+
+html.dark-mode .help-card span,
+body.dark-mode .help-card span { color: #bad1c3; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .nav-links { display: none !important; }
+
+  .navbar {
+    min-height: 82px;
+    padding: 10px 14px;
+    gap: 12px;
+  }
+
+  .nav-logo { width: 52px; height: 52px; }
+  .brand-name { font-size: clamp(17px, 5vw, 21px); white-space: normal; }
+  .brand-tagline { font-size: clamp(8px, 2.5vw, 10px); }
+
+  .mobile-menu-btn {
+    position: relative;
+    z-index: 1302;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+    padding: 0;
+    border: 1px solid rgba(237,187,0,.55);
+    border-radius: 14px;
+    background: rgba(237,187,0,.08);
+    color: #fff;
+    font-size: 27px;
+    line-height: 1;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  .mobile-menu {
+    position: fixed;
+    top: 86px;
+    left: 14px;
+    right: 14px;
+    z-index: 1301;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    padding: 14px;
+    border: 1px solid rgba(237,187,0,.34);
+    border-radius: 18px;
+    background: linear-gradient(160deg, #00150b, #004b28);
+    box-shadow: 0 20px 50px rgba(0,0,0,.48);
+  }
+
+  .mobile-menu.active { display: flex !important; }
+
+  .mobile-menu a,
+  .mobile-menu button {
+    display: block;
+    width: 100%;
+    padding: 14px 16px;
+    border: 0;
+    border-radius: 11px;
+    background: rgba(255,255,255,.08);
+    color: #fff;
+    text-align: left;
+    text-decoration: none;
+    font: 700 15px 'Poppins', sans-serif;
+    cursor: pointer;
+  }
+
+  body.menu-mobile-open { overflow: hidden; }
+
+  .page-shell {
+    width: min(100% - 24px, 760px);
+    padding-top: 28px;
+  }
+
+  .purchase-card { padding: 34px 22px 24px; }
+}
+
+@media (max-width: 640px) {
+  .purchase-top { grid-template-columns: 1fr; }
+  .price-box {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 8px;
+    min-width: 0;
+  }
+  .price-caption { display: inline; }
+
+  .status-panel {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .status-icon { margin: 0 auto; }
+
+  .status-actions { grid-template-columns: 1fr; }
+
+  .tickets-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .help-card {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+
+  .help-card a { text-align: center; }
+}
+
+@media (max-width: 420px) {
+  .page-shell { width: calc(100% - 20px); }
+  .purchase-card { padding: 32px 16px 20px; border-radius: 22px; }
+  .popular-badge { left: 16px; }
+  .meta-grid { flex-direction: column; }
+  .meta-pill { width: 100%; text-align: center; }
+  .tickets-grid { grid-template-columns: 1fr; }
+}
