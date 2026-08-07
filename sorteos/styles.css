@@ -2754,3 +2754,96 @@ body:not(.dark-mode) {
 body.dark-mode {
   background-color: #00190d !important;
 }
+
+
+/* ============================================================
+   FIX BORDE BLANCO EN ESQUINAS DEL HEADER - TEMA CLARO
+   PC + TABLET + ANDROID + IPHONE
+   ============================================================ */
+
+/* Evita que el fondo claro del body se vea detrás de las esquinas redondeadas */
+html,
+body {
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow-x: hidden !important;
+}
+
+body {
+  background-clip: border-box !important;
+}
+
+/* Creamos una base verde detrás del navbar para que nunca se vea blanco */
+.navbar {
+  position: relative !important;
+  isolation: isolate !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+
+  /* Las esquinas inferiores pueden seguir redondeadas,
+     pero las superiores no dejan ver el fondo del body */
+  border-radius: 0 0 22px 22px !important;
+
+  background:
+    radial-gradient(circle at 82% 0%, rgba(22,168,91,.18), transparent 34%),
+    linear-gradient(135deg, #00150b 0%, #00351d 60%, #00502b 100%) !important;
+}
+
+/* Fondo de respaldo pegado al borde superior */
+.navbar::after {
+  content: "" !important;
+  position: absolute !important;
+  z-index: -1 !important;
+  inset: 0 !important;
+  background: #001d10 !important;
+  border-radius: inherit !important;
+  pointer-events: none !important;
+}
+
+/* Tema claro: el área inmediatamente detrás del header debe seguir verde */
+body:not(.dark-mode) .navbar,
+html:not(.dark-mode) .navbar {
+  background:
+    radial-gradient(circle at 82% 0%, rgba(22,168,91,.18), transparent 34%),
+    linear-gradient(135deg, #00150b 0%, #00351d 60%, #00502b 100%) !important;
+}
+
+/* Tema oscuro igual */
+body.dark-mode .navbar,
+html.dark-mode .navbar {
+  background:
+    radial-gradient(circle at 82% 0%, rgba(22,168,91,.18), transparent 34%),
+    linear-gradient(135deg, #00150b 0%, #00351d 60%, #00502b 100%) !important;
+}
+
+/* En móviles quitamos cualquier radio lateral/superior heredado */
+@media (max-width: 900px) {
+  .navbar {
+    border-radius: 0 0 24px 24px !important;
+    margin: 0 !important;
+    width: 100vw !important;
+    left: 0 !important;
+    right: 0 !important;
+  }
+
+  /* Evita una línea clara de 1px en los bordes del viewport */
+  body,
+  html {
+    background-color: #001d10 !important;
+  }
+
+  /* El contenido principal recupera su fondo claro después del header */
+  body:not(.dark-mode) main,
+  body:not(.dark-mode) .hero,
+  body:not(.dark-mode) .main-content {
+    background-color: transparent !important;
+  }
+}
+
+/* En escritorio también eliminamos cualquier borde lateral claro */
+@media (min-width: 901px) {
+  .navbar {
+    border-radius: 0 0 22px 22px !important;
+  }
+}
