@@ -37,8 +37,11 @@ function generarQr(numero) {
   const contenedor = document.getElementById('qr-code');
   contenedor.innerHTML = '';
 
+  const rutaActual = window.location.pathname;
+  const basePath = rutaActual.substring(0, rutaActual.lastIndexOf('/') + 1);
+
   const urlTicket =
-    `${window.location.origin}${window.location.pathname}` +
+    `${window.location.origin}${basePath}validar-ticket.html` +
     `?numero=${encodeURIComponent(numero)}`;
 
   if (typeof QRCode !== 'function') {
@@ -114,11 +117,16 @@ function imprimirTicket() {
 function compartirPorWhatsApp() {
   if (!numeroTicket) return;
 
-  const url = window.location.href;
+  const rutaActual = window.location.pathname;
+  const basePath = rutaActual.substring(0, rutaActual.lastIndexOf('/') + 1);
+  const url =
+    `${window.location.origin}${basePath}validar-ticket.html` +
+    `?numero=${encodeURIComponent(numeroTicket)}`;
+
   const mensaje =
-    `🎟 Mi Ticket Oficial de Deseo Un Premio\n\n` +
+    `🎟 Ticket Oficial - Deseo Un Premio\n\n` +
     `Ticket: ${numeroTicket}\n` +
-    `Verificar ticket: ${url}`;
+    `Validar autenticidad: ${url}`;
 
   const destino = `https://wa.me/?text=${encodeURIComponent(mensaje)}`;
   window.open(destino, '_blank', 'noopener');

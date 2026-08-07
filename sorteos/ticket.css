@@ -594,3 +594,72 @@ body.dark-mode .verification-note {
     text-align: center;
   }
 }
+
+
+/* ============================================================
+   FIX QR FINAL - evita desborde y mantiene tamaño uniforme
+   ============================================================ */
+
+.qr-section {
+  overflow: hidden !important;
+}
+
+.qr-frame {
+  width: 190px !important;
+  height: 190px !important;
+  min-width: 190px !important;
+  min-height: 190px !important;
+  max-width: 190px !important;
+  max-height: 190px !important;
+
+  padding: 12px !important;
+  overflow: hidden !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+#qr-code {
+  width: 166px !important;
+  height: 166px !important;
+  max-width: 166px !important;
+  max-height: 166px !important;
+
+  overflow: hidden !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+#qr-code img,
+#qr-code canvas {
+  display: block !important;
+  width: 166px !important;
+  height: 166px !important;
+  max-width: 166px !important;
+  max-height: 166px !important;
+  margin: 0 auto !important;
+  object-fit: contain !important;
+}
+
+@media (max-width: 700px) {
+  .qr-frame {
+    width: min(190px, 62vw) !important;
+    height: min(190px, 62vw) !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-width: 190px !important;
+    max-height: 190px !important;
+  }
+
+  #qr-code,
+  #qr-code img,
+  #qr-code canvas {
+    width: min(166px, calc(62vw - 24px)) !important;
+    height: min(166px, calc(62vw - 24px)) !important;
+    max-width: 166px !important;
+    max-height: 166px !important;
+  }
+}

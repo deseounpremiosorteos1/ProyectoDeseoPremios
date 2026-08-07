@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Validar Ticket — Deseo un Premio</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="validar-ticket.css?v=20260807-1">
+</head>
+<body>
+  <nav class="navbar">
+    <a class="brand" href="index.html">
+      <img src="assets/logo.png" alt="Deseo un Premio">
+      <div>
+        <strong>Deseo un Premio</strong>
+        <small>Validación oficial de tickets</small>
+      </div>
+    </a>
+  </nav>
+
+  <main class="shell">
+    <section id="loading" class="verify-card">
+      <div class="big-icon">🔎</div>
+      <h1>Verificando ticket...</h1>
+      <p>Consultando la información registrada.</p>
+    </section>
+
+    <section id="invalid" class="verify-card invalid" hidden>
+      <div class="seal invalid-seal">✕</div>
+      <span class="eyebrow">VALIDACIÓN OFICIAL</span>
+      <h1>Ticket inválido o inexistente</h1>
+      <p id="invalid-message">No encontramos este número en el sistema.</p>
+
+      <a class="button secondary" href="index.html">Volver al inicio</a>
+    </section>
+
+    <section id="valid" class="verify-card valid" hidden>
+      <div class="seal">✓</div>
+      <span class="eyebrow">VALIDACIÓN OFICIAL</span>
+      <h1>Ticket auténtico</h1>
+      <p class="lead">Este ticket existe en el sistema de Deseo un Premio.</p>
+
+      <div class="ticket-number">
+        <span>NÚMERO DE TICKET</span>
+        <strong id="v-numero">------</strong>
+      </div>
+
+      <div class="details">
+        <div>
+          <span>Participante</span>
+          <strong id="v-participante">—</strong>
+        </div>
+
+        <div>
+          <span>Documento</span>
+          <strong id="v-documento">—</strong>
+        </div>
+
+        <div>
+          <span>Sorteo</span>
+          <strong id="v-sorteo">—</strong>
+        </div>
+
+        <div>
+          <span>Premio</span>
+          <strong id="v-premio">—</strong>
+        </div>
+
+        <div>
+          <span>Fecha del sorteo</span>
+          <strong id="v-fecha">—</strong>
+        </div>
+
+        <div>
+          <span>Estado</span>
+          <strong id="v-estado">—</strong>
+        </div>
+      </div>
+
+      <div class="auth-box">
+        <span>🔐 Código de validación</span>
+        <strong id="v-codigo">DUP------</strong>
+      </div>
+
+      <a id="btn-ver-ticket" class="button primary" href="#">
+        Ver Ticket Oficial
+      </a>
+
+      <a class="button secondary" href="index.html">
+        Volver al inicio
+      </a>
+    </section>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="validar-ticket.js?v=20260807-1"></script>
+  <script src="tema-global.js"></script>
+</body>
+</html>
