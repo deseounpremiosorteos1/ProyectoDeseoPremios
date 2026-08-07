@@ -1,0 +1,426 @@
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+:root {
+  --green-950: #00170c;
+  --green-900: #002814;
+  --green-800: #004526;
+  --green-600: #0b9650;
+  --gold: #edbb00;
+  --gold-light: #ffe475;
+  --ink: #0a2918;
+  --muted: #65766d;
+  --page: #eef8f2;
+  --white: #ffffff;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 80% 0, rgba(21,185,95,.10), transparent 32%),
+    linear-gradient(180deg, #f9fcfa, var(--page));
+  color: var(--ink);
+  font-family: "Inter", sans-serif;
+}
+
+.navbar {
+  min-height: 88px;
+  padding: 12px clamp(16px, 4vw, 48px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  background:
+    radial-gradient(circle at 82% 0%, rgba(22,168,91,.18), transparent 34%),
+    linear-gradient(135deg, #00150b, #00351d 60%, #00502b);
+  border-bottom: 1px solid rgba(237,187,0,.42);
+  box-shadow: 0 8px 26px rgba(0,24,12,.24);
+}
+
+.nav-brand {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.nav-logo {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 50%;
+  filter: drop-shadow(0 0 10px rgba(237,187,0,.25));
+}
+
+.brand-copy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-copy strong {
+  color: #ffd43a;
+  font: 900 clamp(18px, 2.3vw, 25px) "Poppins", sans-serif;
+  line-height: 1.1;
+}
+
+.brand-copy small {
+  margin-top: 2px;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.back-link {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 800;
+}
+
+.page-shell {
+  width: min(900px, calc(100% - 28px));
+  margin: 0 auto;
+  padding: 40px 0 80px;
+}
+
+.message-card {
+  padding: 42px 24px;
+  border: 1px solid rgba(0,80,42,.12);
+  border-radius: 24px;
+  background: #fff;
+  text-align: center;
+  box-shadow: 0 18px 44px rgba(0,54,28,.09);
+}
+
+.message-icon { font-size: 48px; }
+
+.message-card h1 {
+  margin: 10px 0 6px;
+  font: 800 clamp(23px,4vw,30px) "Poppins", sans-serif;
+}
+
+.message-card p { color: var(--muted); }
+
+.main-btn {
+  display: inline-grid;
+  min-height: 48px;
+  margin-top: 14px;
+  padding: 0 20px;
+  place-items: center;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  color: #11351f;
+  text-decoration: none;
+  font-weight: 900;
+}
+
+.ticket-card {
+  overflow: hidden;
+  border: 1px solid rgba(237,187,0,.55);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 88% 8%, rgba(237,187,0,.10), transparent 28%),
+    #fff;
+  box-shadow: 0 28px 70px rgba(0,54,28,.14);
+}
+
+.ticket-topbar {
+  padding: 18px 24px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.official-pill,
+.status-pill {
+  padding: 7px 11px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .06em;
+}
+
+.official-pill {
+  background: #fff5c7;
+  color: #7a5a00;
+  border: 1px solid #efd15a;
+}
+
+.status-pill {
+  background: #dff9e8;
+  color: #08743e;
+  border: 1px solid #8cddb0;
+}
+
+.ticket-brand {
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.ticket-logo {
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.ticket-kicker {
+  display: block;
+  color: #0b8b49;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .14em;
+}
+
+.ticket-brand h1 {
+  margin: 5px 0 0;
+  font: 800 clamp(23px,4vw,34px) "Poppins", sans-serif;
+  line-height: 1.15;
+}
+
+.ticket-number-box {
+  margin: 0 24px;
+  padding: 20px;
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 80% 0, rgba(237,187,0,.17), transparent 35%),
+    linear-gradient(145deg, #00331c, #00502b);
+  color: #fff;
+  text-align: center;
+}
+
+.ticket-number-box span {
+  display: block;
+  color: #f6d652;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .14em;
+}
+
+.ticket-number-box strong {
+  display: block;
+  margin-top: 4px;
+  color: #fff;
+  font: 900 clamp(38px,8vw,62px) "Poppins", sans-serif;
+  letter-spacing: .10em;
+}
+
+.ticket-grid {
+  padding: 22px 24px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 10px;
+}
+
+.data-card {
+  min-width: 0;
+  padding: 15px;
+  border: 1px solid rgba(0,80,42,.11);
+  border-radius: 14px;
+  background: #f8fcf9;
+}
+
+.label {
+  display: block;
+  margin-bottom: 5px;
+  color: #718177;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.data-card strong {
+  color: #12351f;
+  font-size: 14px;
+  word-break: break-word;
+}
+
+.qr-section {
+  margin: 0 24px 22px;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  gap: 24px;
+  align-items: center;
+  border-radius: 20px;
+  background: #f3faf5;
+  border: 1px solid rgba(0,80,42,.11);
+}
+
+.qr-copy h2 {
+  margin: 5px 0 6px;
+  font: 800 22px "Poppins", sans-serif;
+}
+
+.qr-copy p {
+  margin: 0;
+  max-width: 430px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.qr-frame {
+  width: 190px;
+  height: 190px;
+  padding: 12px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(0,45,24,.10);
+}
+
+#qr-code img,
+#qr-code canvas {
+  display: block !important;
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+.ticket-footer {
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  background: #eef8f1;
+  border-top: 1px solid rgba(0,80,42,.10);
+  color: #4d6757;
+  font-size: 12px;
+}
+
+.ticket-footer a {
+  color: #087741;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+html.dark-mode body,
+body.dark-mode {
+  background: #00180d;
+}
+
+html.dark-mode .ticket-card,
+body.dark-mode .ticket-card,
+html.dark-mode .message-card,
+body.dark-mode .message-card {
+  background: #062817;
+  color: #fff;
+  border-color: rgba(237,187,0,.28);
+}
+
+html.dark-mode .data-card,
+body.dark-mode .data-card,
+html.dark-mode .qr-section,
+body.dark-mode .qr-section {
+  background: #00321b;
+  border-color: rgba(237,187,0,.16);
+}
+
+html.dark-mode .data-card strong,
+body.dark-mode .data-card strong,
+html.dark-mode .qr-copy h2,
+body.dark-mode .qr-copy h2 {
+  color: #fff;
+}
+
+html.dark-mode .label,
+html.dark-mode .qr-copy p,
+html.dark-mode .message-card p,
+body.dark-mode .label,
+body.dark-mode .qr-copy p,
+body.dark-mode .message-card p {
+  color: #bfd2c5;
+}
+
+html.dark-mode .ticket-footer,
+body.dark-mode .ticket-footer {
+  background: #002814;
+  color: #b9d0c0;
+}
+
+@media (max-width: 700px) {
+  .navbar {
+    min-height: 82px;
+    padding: 10px 14px;
+  }
+
+  .nav-logo {
+    width: 52px;
+    height: 52px;
+  }
+
+  .brand-copy small {
+    font-size: 9px;
+  }
+
+  .back-link {
+    font-size: 12px;
+  }
+
+  .page-shell {
+    width: calc(100% - 20px);
+    padding-top: 24px;
+  }
+
+  .ticket-topbar {
+    padding: 16px 16px 0;
+  }
+
+  .ticket-brand {
+    padding: 20px 16px;
+  }
+
+  .ticket-logo {
+    width: 62px;
+    height: 62px;
+  }
+
+  .ticket-number-box {
+    margin: 0 16px;
+  }
+
+  .ticket-grid {
+    padding: 16px;
+    grid-template-columns: 1fr;
+  }
+
+  .qr-section {
+    margin: 0 16px 16px;
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .qr-copy p {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .qr-frame {
+    width: min(220px, 72vw);
+    height: min(220px, 72vw);
+    margin: 0 auto;
+  }
+
+  .ticket-footer {
+    padding: 16px;
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+@media (max-width: 380px) {
+  .brand-copy small { display: none; }
+  .back-link { font-size: 11px; }
+  .ticket-number-box strong { letter-spacing: .05em; }
+}

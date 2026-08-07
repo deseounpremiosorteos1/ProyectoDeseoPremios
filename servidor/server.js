@@ -492,6 +492,69 @@ app.delete('/api/sorteos/:id', requiereAdmin, async (req, res) => {
   }
 });
 
+
+// ============================================================
+// TICKET OFICIAL - CONSULTA SEGURA POR NÚMERO
+// Este endpoint NO modifica la base de datos.
+// ============================================================
+app.get('/api/ticket/:numero', async (req, res) => {
+  try {
+    const resultado = await pool.query(
+      `SELECT
+         t.numero,
+         p.nombres,
+         p.apellidos,
+         p.documento,
+         s.nombre AS sorteo,
+         s.premio,
+         s.premios,
+         s.fecha_sorteo,
+         c.estado AS estado_pago
+       FROM tickets t
+       JOIN participantes p
+         ON p.id = t.participante_id
+       JOIN sorteos s
+         ON s.id = t.sorteo_id
+       JOIN comprobantes c
+         ON c.id = t.comprobante_id
+       WHERE t.numero = $1
+       LIMIT 1`,
+      [req.params.numero]
+    );
+
+    const fila = resultado.rows[0];
+
+    if (!fila) {
+      return res.status(404).json({
+        valido: false,
+        error: 'Ticket no encontrado',
+      });
+    }
+
+    const listaPremios = Array.isArray(fila.premios)
+      ? fila.premios.filter(Boolean)
+      : [];
+
+    return res.json({
+      valido: fila.estado_pago === 'aprobado',
+      numero: fila.numero,
+      participante: `${fila.nombres} ${fila.apellidos}`.trim(),
+      documento: fila.documento,
+      sorteo: fila.sorteo,
+      premio: listaPremios[0] || fila.premio || 'Premio del sorteo',
+      fecha_sorteo: fila.fecha_sorteo,
+      estado_pago: fila.estado_pago,
+    });
+  } catch (error) {
+    console.error('Error al consultar ticket:', error);
+
+    return res.status(500).json({
+      valido: false,
+      error: 'Error al consultar el ticket',
+    });
+  }
+});
+
 app.get('/api/tickets/:documento', async (req, res) => {
   try {
     const participanteResultado = await pool.query(

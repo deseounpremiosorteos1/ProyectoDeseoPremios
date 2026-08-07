@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="format-detection" content="telephone=no">
+  <title>Ticket Oficial — Deseo un Premio</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="ticket.css?v=20260807-1">
+</head>
+
+<body>
+  <nav class="navbar">
+    <a class="nav-brand" href="index.html" aria-label="Ir al inicio">
+      <img src="assets/logo.png" class="nav-logo" alt="Deseo un Premio">
+      <div class="brand-copy">
+        <strong>Deseo un Premio</strong>
+        <small>¡Tu deseo está a un ticket de distancia!</small>
+      </div>
+    </a>
+
+    <a class="back-link" href="mis-tickets.html">← Mis Tickets</a>
+  </nav>
+
+  <main class="page-shell">
+    <section id="loading-card" class="message-card">
+      <div class="message-icon">🎟</div>
+      <h1>Consultando tu ticket...</h1>
+      <p>Estamos verificando la información registrada.</p>
+    </section>
+
+    <section id="error-card" class="message-card error" hidden>
+      <div class="message-icon">⚠️</div>
+      <h1>No pudimos validar el ticket</h1>
+      <p id="error-text">Revisa el enlace o inténtalo nuevamente.</p>
+      <a class="main-btn" href="mis-tickets.html">Volver a Mis Tickets</a>
+    </section>
+
+    <section id="ticket-card" class="ticket-card" hidden>
+      <div class="ticket-topbar">
+        <span class="official-pill">✓ TICKET OFICIAL</span>
+        <span id="ticket-status" class="status-pill">VÁLIDO</span>
+      </div>
+
+      <div class="ticket-brand">
+        <img src="assets/logo.png" alt="" class="ticket-logo">
+        <div>
+          <span class="ticket-kicker">DESEO UN PREMIO</span>
+          <h1>Tu participación está registrada</h1>
+        </div>
+      </div>
+
+      <div class="ticket-number-box">
+        <span>NÚMERO DE TICKET</span>
+        <strong id="ticket-number">------</strong>
+      </div>
+
+      <div class="ticket-grid">
+        <div class="data-card">
+          <span class="label">Participante</span>
+          <strong id="participant-name">—</strong>
+        </div>
+
+        <div class="data-card">
+          <span class="label">Documento</span>
+          <strong id="participant-document">—</strong>
+        </div>
+
+        <div class="data-card">
+          <span class="label">Sorteo</span>
+          <strong id="raffle-name">—</strong>
+        </div>
+
+        <div class="data-card">
+          <span class="label">Premio principal</span>
+          <strong id="raffle-prize">—</strong>
+        </div>
+
+        <div class="data-card">
+          <span class="label">Fecha del sorteo</span>
+          <strong id="raffle-date">—</strong>
+        </div>
+
+        <div class="data-card">
+          <span class="label">Estado del pago</span>
+          <strong id="payment-status">—</strong>
+        </div>
+      </div>
+
+      <div class="qr-section">
+        <div class="qr-copy">
+          <span class="ticket-kicker">VALIDACIÓN DIGITAL</span>
+          <h2>Escanea para verificar</h2>
+          <p>Este QR abre este mismo ticket para comprobar que el número existe en el sistema.</p>
+        </div>
+
+        <div class="qr-frame">
+          <div id="qr-code" aria-label="Código QR del ticket"></div>
+        </div>
+      </div>
+
+      <div class="ticket-footer">
+        <span id="verification-code">Código: DUP------</span>
+        <a href="mis-tickets.html">Ver todas mis compras →</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <script src="ticket.js?v=20260807-1"></script>
+  <script src="tema-global.js"></script>
+</body>
+</html>
