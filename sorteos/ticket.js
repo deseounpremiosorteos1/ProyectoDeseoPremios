@@ -87,6 +87,61 @@ function pintarTicket(ticket) {
   generarQr(ticket.numero);
 }
 
+
+function mostrarToast(mensaje) {
+  let toast = document.getElementById('ticket-toast');
+
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'ticket-toast';
+    toast.className = 'ticket-toast';
+    document.body.appendChild(toast);
+  }
+
+  toast.textContent = mensaje;
+  toast.classList.add('visible');
+
+  clearTimeout(window.__ticketToastTimer);
+  window.__ticketToastTimer = setTimeout(() => {
+    toast.classList.remove('visible');
+  }, 2500);
+}
+
+function imprimirTicket() {
+  window.print();
+}
+
+function compartirPorWhatsApp() {
+  if (!numeroTicket) return;
+
+  const url = window.location.href;
+  const mensaje =
+    `🎟 Mi Ticket Oficial de Deseo Un Premio\n\n` +
+    `Ticket: ${numeroTicket}\n` +
+    `Verificar ticket: ${url}`;
+
+  const destino = `https://wa.me/?text=${encodeURIComponent(mensaje)}`;
+  window.open(destino, '_blank', 'noopener');
+}
+
+async function verificarNuevamente() {
+  const boton = document.getElementById('btn-refresh');
+
+  if (boton) {
+    boton.disabled = true;
+    boton.textContent = '↻ Verificando...';
+  }
+
+  await cargarTicket();
+
+  if (boton) {
+    boton.disabled = false;
+    boton.textContent = '↻ Verificar nuevamente';
+  }
+
+  mostrarToast('Estado del ticket actualizado');
+}
+
 async function cargarTicket() {
   if (!numeroTicket) {
     mostrarError('El enlace no contiene un número de ticket.');
@@ -112,4 +167,10 @@ async function cargarTicket() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', cargarTicket);
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('btn-print')?.addEventListener('click', imprimirTicket);
+  document.getElementById('btn-whatsapp')?.addEventListener('click', compartirPorWhatsApp);
+  document.getElementById('btn-refresh')?.addEventListener('click', verificarNuevamente);
+
+  cargarTicket();
+});
