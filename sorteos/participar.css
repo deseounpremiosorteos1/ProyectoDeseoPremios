@@ -1386,3 +1386,141 @@ body.dark-mode .pago-modal p { color: #c7d7ce; }
   color: inherit !important;
   text-decoration: none !important;
 }
+
+
+/* ============================================================
+   FIX YAPE + QR + CONTRASTE TEMA NOCHE
+   ============================================================ */
+
+/* Número correcto y legible */
+.yape-num {
+  white-space: nowrap !important;
+  line-height: 1.08 !important;
+}
+
+/* QR perfectamente centrado en escritorio y móvil */
+.yape-box {
+  overflow: hidden !important;
+}
+
+.yape-qr {
+  width: min(190px, 100%) !important;
+  max-width: 190px !important;
+  aspect-ratio: 1 / 1 !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  margin: 0 auto 14px !important;
+  padding: 10px !important;
+
+  background: #ffffff !important;
+  border-radius: 12px !important;
+}
+
+.yape-qr .qr-img,
+.qr-img {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 170px !important;
+  max-height: 170px !important;
+
+  margin: 0 auto !important;
+  padding: 0 !important;
+
+  object-fit: contain !important;
+  object-position: center !important;
+  border-radius: 6px !important;
+}
+
+/* Tema noche: cantidad y total deben destacar */
+html.dark-mode .counter-num,
+body.dark-mode .counter-num {
+  color: #ffffff !important;
+  text-shadow: 0 1px 10px rgba(255,255,255,.12) !important;
+}
+
+html.dark-mode .total-label,
+body.dark-mode .total-label {
+  color: #d8e9df !important;
+}
+
+html.dark-mode .total-monto,
+body.dark-mode .total-monto {
+  color: #ffd84a !important;
+  text-shadow: 0 2px 12px rgba(255, 216, 74, .18) !important;
+}
+
+/* Si aparece un número de ticket dentro de Participar */
+html.dark-mode .ticket-number,
+body.dark-mode .ticket-number {
+  color: #fff4b3 !important;
+  background: rgba(237, 187, 0, .12) !important;
+  border-color: rgba(237, 187, 0, .38) !important;
+}
+
+/* Móvil */
+@media (max-width: 480px) {
+  .yape-card {
+    padding: 16px 14px !important;
+    overflow: hidden !important;
+  }
+
+  .yape-box {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 20px 14px 18px !important;
+    text-align: center !important;
+  }
+
+  .yape-num {
+    font-size: clamp(27px, 8.5vw, 36px) !important;
+    letter-spacing: 0 !important;
+  }
+
+  .yape-empresa {
+    font-size: 12px !important;
+    line-height: 1.35 !important;
+    padding: 0 4px !important;
+  }
+
+  .yape-qr {
+    width: min(72vw, 230px) !important;
+    max-width: 230px !important;
+    height: auto !important;
+    aspect-ratio: 1 / 1 !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .yape-qr .qr-img,
+  .qr-img {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+  }
+
+  .btn-copiar {
+    min-height: 48px !important;
+    font-size: 14px !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .yape-box {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+
+  .yape-num {
+    font-size: clamp(25px, 8vw, 32px) !important;
+  }
+
+  .yape-qr {
+    width: min(76vw, 210px) !important;
+    max-width: 210px !important;
+  }
+}
