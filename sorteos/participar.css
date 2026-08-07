@@ -1371,3 +1371,347 @@ body.dark-mode .pago-modal p { color: #c7d7ce; }
   .total-label { font-size: 10px; }
   .total-monto { font-size: 22px; }
 }
+
+
+/* ============================================================
+   FIX FINAL MODAL PAGO RECIBIDO + RESPONSIVE
+   Escritorio, tablet, Android e iPhone
+   ============================================================ */
+
+#modal-pago-recibido.pago-modal-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 99999 !important;
+
+  width: 100vw !important;
+  height: 100dvh !important;
+  min-height: 100vh !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  padding:
+    max(18px, env(safe-area-inset-top))
+    max(18px, env(safe-area-inset-right))
+    max(18px, env(safe-area-inset-bottom))
+    max(18px, env(safe-area-inset-left)) !important;
+
+  background: rgba(0, 20, 10, 0.72) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  overflow-y: auto !important;
+
+  transition:
+    opacity .22s ease,
+    visibility .22s ease !important;
+}
+
+#modal-pago-recibido.pago-modal-overlay.visible {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+#modal-pago-recibido .pago-modal {
+  position: relative !important;
+  width: min(440px, calc(100vw - 36px)) !important;
+  max-width: 440px !important;
+  max-height: calc(100dvh - 36px) !important;
+  overflow-y: auto !important;
+
+  margin: auto !important;
+  padding: 34px 30px 28px !important;
+
+  border-radius: 26px !important;
+  border: 1px solid rgba(13, 143, 72, .20) !important;
+
+  background:
+    radial-gradient(circle at 50% 0%, rgba(40, 208, 111, .15), transparent 38%),
+    #ffffff !important;
+
+  box-shadow:
+    0 30px 90px rgba(0, 25, 12, .38),
+    0 8px 28px rgba(0, 0, 0, .16) !important;
+
+  text-align: center !important;
+  color: #163824 !important;
+
+  transform: translateY(14px) scale(.97) !important;
+  transition: transform .22s ease !important;
+}
+
+#modal-pago-recibido.pago-modal-overlay.visible .pago-modal {
+  transform: translateY(0) scale(1) !important;
+}
+
+#modal-pago-recibido .pago-check {
+  width: 94px !important;
+  height: 94px !important;
+  min-width: 94px !important;
+  margin: 0 auto 22px !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  border-radius: 50% !important;
+  border: 7px solid #dcfce7 !important;
+
+  background: linear-gradient(145deg, #26d66c, #079f48) !important;
+  color: #ffffff !important;
+
+  font-family: "Poppins", sans-serif !important;
+  font-size: 54px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+
+  box-shadow:
+    0 15px 30px rgba(10, 172, 80, .28),
+    inset 0 1px 5px rgba(255,255,255,.35) !important;
+}
+
+#modal-pago-recibido .pago-modal h2 {
+  display: block !important;
+  margin: 0 0 12px !important;
+
+  color: #0a3921 !important;
+  font-family: "Poppins", sans-serif !important;
+  font-size: 28px !important;
+  font-weight: 800 !important;
+  line-height: 1.2 !important;
+}
+
+#modal-pago-recibido .pago-modal p {
+  display: block !important;
+  max-width: 360px !important;
+  margin: 8px auto !important;
+
+  color: #66766d !important;
+  font-family: "Inter", sans-serif !important;
+  font-size: 15px !important;
+  line-height: 1.6 !important;
+}
+
+#modal-pago-recibido .pago-modal strong {
+  color: #0a3921 !important;
+}
+
+#modal-pago-recibido .pago-modal-btn {
+  display: block !important;
+  width: 100% !important;
+  min-height: 54px !important;
+
+  margin: 24px 0 0 !important;
+  padding: 14px 20px !important;
+
+  border: 0 !important;
+  border-radius: 14px !important;
+
+  background: linear-gradient(135deg, #0ca653, #20cd6d) !important;
+  color: #ffffff !important;
+
+  font-family: "Poppins", sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 800 !important;
+
+  cursor: pointer !important;
+  box-shadow: 0 10px 26px rgba(10, 166, 81, .25) !important;
+
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* Tema oscuro */
+html.dark-mode #modal-pago-recibido .pago-modal,
+body.dark-mode #modal-pago-recibido .pago-modal {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(40, 208, 111, .14), transparent 40%),
+    #062817 !important;
+  border-color: rgba(237, 187, 0, .28) !important;
+}
+
+html.dark-mode #modal-pago-recibido .pago-modal h2,
+html.dark-mode #modal-pago-recibido .pago-modal strong,
+body.dark-mode #modal-pago-recibido .pago-modal h2,
+body.dark-mode #modal-pago-recibido .pago-modal strong {
+  color: #ffffff !important;
+}
+
+html.dark-mode #modal-pago-recibido .pago-modal p,
+body.dark-mode #modal-pago-recibido .pago-modal p {
+  color: #c5d7cc !important;
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+  #modal-pago-recibido.pago-modal-overlay {
+    padding:
+      max(16px, env(safe-area-inset-top))
+      max(14px, env(safe-area-inset-right))
+      max(16px, env(safe-area-inset-bottom))
+      max(14px, env(safe-area-inset-left)) !important;
+  }
+
+  #modal-pago-recibido .pago-modal {
+    width: min(420px, calc(100vw - 28px)) !important;
+    max-height: calc(100dvh - 28px) !important;
+    padding: 30px 22px 24px !important;
+    border-radius: 22px !important;
+  }
+
+  #modal-pago-recibido .pago-check {
+    width: 84px !important;
+    height: 84px !important;
+    min-width: 84px !important;
+    font-size: 47px !important;
+    margin-bottom: 18px !important;
+  }
+
+  #modal-pago-recibido .pago-modal h2 {
+    font-size: 25px !important;
+  }
+
+  #modal-pago-recibido .pago-modal p {
+    font-size: 14px !important;
+    line-height: 1.55 !important;
+  }
+}
+
+/* Móviles 360–480 px */
+@media (max-width: 480px) {
+  #modal-pago-recibido.pago-modal-overlay {
+    align-items: center !important;
+    padding:
+      max(12px, env(safe-area-inset-top))
+      max(10px, env(safe-area-inset-right))
+      max(12px, env(safe-area-inset-bottom))
+      max(10px, env(safe-area-inset-left)) !important;
+  }
+
+  #modal-pago-recibido .pago-modal {
+    width: calc(100vw - 20px) !important;
+    max-width: none !important;
+    max-height: calc(100dvh - 24px) !important;
+    padding: 26px 18px 20px !important;
+    border-radius: 20px !important;
+  }
+
+  #modal-pago-recibido .pago-check {
+    width: 76px !important;
+    height: 76px !important;
+    min-width: 76px !important;
+    border-width: 6px !important;
+    font-size: 42px !important;
+    margin-bottom: 16px !important;
+  }
+
+  #modal-pago-recibido .pago-modal h2 {
+    font-size: 23px !important;
+    margin-bottom: 10px !important;
+  }
+
+  #modal-pago-recibido .pago-modal p {
+    max-width: 100% !important;
+    font-size: 13.5px !important;
+    line-height: 1.52 !important;
+  }
+
+  #modal-pago-recibido .pago-modal-btn {
+    min-height: 52px !important;
+    margin-top: 20px !important;
+    padding: 13px 16px !important;
+    font-size: 15px !important;
+  }
+
+  /* Paso 2 de compra: una columna en móvil */
+  .paso2-grid {
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+    gap: 14px !important;
+  }
+
+  .ticket-counter-card,
+  .upload-card,
+  .yape-card {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .counter-row {
+    display: grid !important;
+    grid-template-columns: 40px 40px 40px minmax(90px, 1fr) !important;
+    align-items: center !important;
+    column-gap: 7px !important;
+  }
+
+  .counter-btn {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+  }
+
+  .counter-num {
+    min-width: 0 !important;
+    text-align: center !important;
+  }
+
+  .total-pagar {
+    min-width: 0 !important;
+    margin-left: 2px !important;
+    text-align: right !important;
+  }
+
+  .total-monto {
+    font-size: clamp(22px, 7vw, 30px) !important;
+    white-space: nowrap !important;
+  }
+
+  .yape-box,
+  .upload-zone {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .yape-qr {
+    width: min(190px, 60vw) !important;
+    height: auto !important;
+  }
+}
+
+/* Pantallas muy pequeñas (320–359 px) */
+@media (max-width: 359px) {
+  #modal-pago-recibido .pago-modal {
+    width: calc(100vw - 14px) !important;
+    padding: 22px 14px 18px !important;
+  }
+
+  #modal-pago-recibido .pago-check {
+    width: 68px !important;
+    height: 68px !important;
+    min-width: 68px !important;
+    font-size: 37px !important;
+  }
+
+  #modal-pago-recibido .pago-modal h2 {
+    font-size: 21px !important;
+  }
+
+  #modal-pago-recibido .pago-modal p {
+    font-size: 13px !important;
+  }
+
+  .counter-row {
+    grid-template-columns: 36px 36px 36px minmax(82px, 1fr) !important;
+    column-gap: 5px !important;
+  }
+
+  .counter-btn {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+  }
+}
