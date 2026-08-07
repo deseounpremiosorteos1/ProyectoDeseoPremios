@@ -879,3 +879,75 @@ body.dark-mode .type-btn.active {
   .logo-shell { width: 48px; height: 48px; flex-basis: 48px; }
   .mobile-menu-btn { width: 46px; height: 46px; flex-basis: 46px; }
 }
+
+
+/* ============================================================
+   VER TICKET OFICIAL
+   ============================================================ */
+
+.ticket-link {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+
+  min-height: 78px;
+  text-decoration: none !important;
+
+  transition:
+    transform .18s ease,
+    box-shadow .18s ease,
+    filter .18s ease;
+}
+
+.ticket-link span {
+  display: block;
+  color: #04351c;
+  font: 900 17px "Poppins", sans-serif;
+  letter-spacing: .04em;
+}
+
+.ticket-link small {
+  display: block;
+  color: #5f4d00;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .02em;
+}
+
+.ticket-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(227,174,0,.20);
+  filter: brightness(1.02);
+}
+
+.ticket-link:focus-visible {
+  outline: 3px solid rgba(12,166,83,.35);
+  outline-offset: 3px;
+}
+
+html.dark-mode .ticket-link span,
+body.dark-mode .ticket-link span {
+  color: #163821 !important;
+}
+
+html.dark-mode .ticket-link small,
+body.dark-mode .ticket-link small {
+  color: #6f5900 !important;
+}
+
+@media (max-width: 680px) {
+  .ticket-link {
+    min-height: 72px;
+    padding: 12px 8px;
+  }
+
+  .ticket-link span {
+    font-size: 16px;
+  }
+
+  .ticket-link small {
+    font-size: 9.5px;
+  }
+}

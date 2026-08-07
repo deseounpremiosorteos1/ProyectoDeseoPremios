@@ -273,7 +273,12 @@ function crearCompraHTML(compra) {
           ${
             tickets.length
               ? tickets.map((numero) =>
-                  `<div class="ticket-number">🎟 ${escaparHTML(numero)}</div>`
+                  `<a class="ticket-number ticket-link"
+                      href="ticket.html?numero=${encodeURIComponent(numero)}"
+                      aria-label="Ver ticket oficial ${escaparHTML(numero)}">
+                    <span>🎟 ${escaparHTML(numero)}</span>
+                    <small>Ver Ticket Oficial →</small>
+                  </a>`
                 ).join('')
               : '<div class="ticket-number">Generando ticket…</div>'
           }
