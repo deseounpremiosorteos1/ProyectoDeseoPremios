@@ -2847,3 +2847,64 @@ html.dark-mode .navbar {
     border-radius: 0 0 22px 22px !important;
   }
 }
+
+
+/* ============================================================
+   FIX DEFINITIVO — SIN ESQUINAS BLANCAS EN EL HEADER
+   La causa era el border-radius del navbar dejando ver el
+   fondo claro que existe detrás del encabezado.
+   ============================================================ */
+
+.navbar,
+header.navbar {
+  border-radius: 0 !important;
+  -webkit-border-radius: 0 !important;
+
+  width: 100% !important;
+  max-width: none !important;
+
+  margin: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+
+  border-left: 0 !important;
+  border-right: 0 !important;
+
+  overflow: visible !important;
+
+  background:
+    radial-gradient(circle at 82% 0%, rgba(22,168,91,.18), transparent 34%),
+    linear-gradient(135deg, #00150b 0%, #00351d 60%, #00502b 100%) !important;
+}
+
+/* Eliminamos cualquier pseudo-elemento de respaldo con radios */
+.navbar::after,
+header.navbar::after {
+  border-radius: 0 !important;
+  -webkit-border-radius: 0 !important;
+}
+
+/* PC */
+@media (min-width: 901px) {
+  .navbar,
+  header.navbar {
+    border-radius: 0 !important;
+    -webkit-border-radius: 0 !important;
+  }
+}
+
+/* Tablet + Android + iPhone */
+@media (max-width: 900px) {
+  .navbar,
+  header.navbar {
+    width: 100% !important;
+    width: 100vw !important;
+
+    border-radius: 0 !important;
+    -webkit-border-radius: 0 !important;
+
+    margin: 0 !important;
+    padding-left: max(14px, env(safe-area-inset-left)) !important;
+    padding-right: max(14px, env(safe-area-inset-right)) !important;
+  }
+}
