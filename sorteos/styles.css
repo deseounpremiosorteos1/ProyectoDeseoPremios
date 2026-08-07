@@ -2625,3 +2625,132 @@ body,
 @media (max-width: 600px) {
   .mobile-menu { top: 80px; }
 }
+
+
+/* ============================================================
+   FIX FINAL - INICIO / MENÚ MÓVIL / CAMBIO DE TEMA
+   Evita franjas o líneas claras y unifica el menú con Participar
+   ============================================================ */
+
+@media (max-width: 900px) {
+
+  /* El encabezado siempre mantiene el acabado verde/dorado */
+  .navbar {
+    background:
+      radial-gradient(circle at 82% 0%, rgba(22,168,91,.18), transparent 34%),
+      linear-gradient(135deg, #00150b 0%, #00351d 60%, #00502b 100%) !important;
+    border-top: 3px solid transparent !important;
+    border-image: linear-gradient(90deg, #a50044, #edbb00, #18a95d) 1 !important;
+    border-bottom: 1px solid rgba(237,187,0,.28) !important;
+    box-shadow: 0 8px 28px rgba(0,24,12,.32) !important;
+  }
+
+  /* El panel del menú no hereda fondos/blancos del tema claro */
+  .mobile-menu,
+  body.dark-mode .mobile-menu {
+    background:
+      radial-gradient(circle at 82% 0%, rgba(237,187,0,.10), transparent 34%),
+      linear-gradient(160deg, #002613 0%, #004b29 100%) !important;
+
+    border: 1px solid rgba(237,187,0,.34) !important;
+    box-shadow: 0 20px 52px rgba(0,0,0,.42) !important;
+
+    overflow: hidden !important;
+    isolation: isolate;
+  }
+
+  /* Quitamos cualquier línea/divisor blanco generado por reglas anteriores */
+  .mobile-menu::before,
+  .mobile-menu::after,
+  .mobile-menu a::before,
+  .mobile-menu a::after,
+  .mobile-menu button::before,
+  .mobile-menu button::after {
+    content: none !important;
+    display: none !important;
+    border: 0 !important;
+  }
+
+  /* Elementos del menú: verde sólido y uniforme */
+  .mobile-menu a,
+  .mobile-menu button,
+  body.dark-mode .mobile-menu a,
+  body.dark-mode .mobile-menu button {
+    background: rgba(10, 89, 51, .72) !important;
+    color: #ffffff !important;
+
+    border: 1px solid rgba(255,255,255,.025) !important;
+    border-bottom: 0 !important;
+    outline: 0 !important;
+    box-shadow: none !important;
+
+    text-decoration: none !important;
+  }
+
+  .mobile-menu a + a,
+  .mobile-menu a + button,
+  .mobile-menu button + a,
+  .mobile-menu button + button {
+    border-top: 0 !important;
+  }
+
+  /* Primer elemento activo */
+  .mobile-menu a:first-child,
+  body.dark-mode .mobile-menu a:first-child {
+    background: linear-gradient(135deg, #f2c20c, #ffe36b) !important;
+    color: #0c321e !important;
+    border-color: transparent !important;
+  }
+
+  /* Hover/tap sin destellos blancos */
+  .mobile-menu a:active,
+  .mobile-menu button:active,
+  .mobile-menu a:focus,
+  .mobile-menu button:focus {
+    background: rgba(13, 112, 62, .86) !important;
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  .mobile-menu a:first-child:active,
+  .mobile-menu a:first-child:focus {
+    background: linear-gradient(135deg, #f2c20c, #ffe36b) !important;
+  }
+
+  /* Botón hamburguesa igual en ambos temas */
+  .mobile-menu-btn,
+  body.dark-mode .mobile-menu-btn {
+    background: rgba(0, 58, 32, .70) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(237,187,0,.50) !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
+
+  /* Evita líneas claras entre secciones al cambiar al tema claro */
+  .hero,
+  .sorteos-section,
+  .como-section,
+  .ganadores-section {
+    border-top-color: transparent !important;
+    border-bottom-color: transparent !important;
+  }
+
+  /* Si alguna sección tiene pseudo-elementos lineales heredados */
+  .hero > *,
+  .sorteos-section > *,
+  .como-section > *,
+  .ganadores-section > * {
+    border-color: inherit;
+  }
+}
+
+/* Tema claro: fondo limpio, sin franjas blancas intermedias */
+body:not(.dark-mode) {
+  background-color: #eef8f2 !important;
+}
+
+/* Tema oscuro: conserva el verde profundo */
+body.dark-mode {
+  background-color: #00190d !important;
+}
