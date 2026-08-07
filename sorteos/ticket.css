@@ -663,3 +663,101 @@ body.dark-mode .verification-note {
     max-height: 166px !important;
   }
 }
+
+
+/* ============================================================
+   FIX QR ESCANEABLE
+   - No escala el canvas
+   - Más borde blanco (quiet zone)
+   - Menor densidad visual
+   ============================================================ */
+
+.qr-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+}
+
+.qr-frame {
+  width: 190px !important;
+  height: 190px !important;
+  min-width: 190px !important;
+  min-height: 190px !important;
+  max-width: 190px !important;
+  max-height: 190px !important;
+
+  padding: 21px !important;
+  overflow: visible !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  background: #ffffff !important;
+  border-radius: 16px !important;
+}
+
+#qr-code {
+  width: 148px !important;
+  height: 148px !important;
+  min-width: 148px !important;
+  min-height: 148px !important;
+  max-width: 148px !important;
+  max-height: 148px !important;
+
+  overflow: visible !important;
+  background: #ffffff !important;
+}
+
+#qr-code img,
+#qr-code canvas {
+  display: block !important;
+  width: 148px !important;
+  height: 148px !important;
+  min-width: 148px !important;
+  min-height: 148px !important;
+  max-width: 148px !important;
+  max-height: 148px !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  object-fit: none !important;
+  image-rendering: pixelated;
+}
+
+.qr-open-link {
+  color: #087741;
+  font-size: 11px;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+html.dark-mode .qr-open-link,
+body.dark-mode .qr-open-link {
+  color: #74e4a9;
+}
+
+@media (max-width: 700px) {
+  .qr-frame {
+    width: 184px !important;
+    height: 184px !important;
+    min-width: 184px !important;
+    min-height: 184px !important;
+    max-width: 184px !important;
+    max-height: 184px !important;
+    padding: 18px !important;
+  }
+
+  #qr-code,
+  #qr-code img,
+  #qr-code canvas {
+    width: 148px !important;
+    height: 148px !important;
+    min-width: 148px !important;
+    min-height: 148px !important;
+    max-width: 148px !important;
+    max-height: 148px !important;
+  }
+}

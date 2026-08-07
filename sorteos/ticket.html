@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="ticket.css?v=20260807-6">
+  <link rel="stylesheet" href="ticket.css?v=20260807-9">
 </head>
 
 <body>
@@ -97,8 +97,14 @@
           <p>Este QR abre la validación oficial del ticket para comprobar que existe y está aprobado.</p>
         </div>
 
-        <div class="qr-frame">
-          <div id="qr-code" aria-label="Código QR del ticket"></div>
+        <div class="qr-block">
+          <div class="qr-frame">
+            <div id="qr-code" aria-label="Código QR del ticket"></div>
+          </div>
+
+          <a id="btn-open-validation" class="qr-open-link" href="#">
+            Abrir validación →
+          </a>
         </div>
       </div>
 
@@ -129,7 +135,7 @@
 
   <script src="config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-  <script src="ticket.js?v=20260807-6"></script>
+  <script src="ticket.js?v=20260807-9"></script>
   <script src="tema-global.js"></script>
 </body>
 </html>

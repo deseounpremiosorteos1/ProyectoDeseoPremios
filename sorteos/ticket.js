@@ -33,16 +33,26 @@ function mostrarError(mensaje) {
   document.getElementById('error-text').textContent = mensaje;
 }
 
+function construirUrlValidacion(numero) {
+  const rutaActual = window.location.pathname;
+  const basePath = rutaActual.substring(0, rutaActual.lastIndexOf('/') + 1);
+
+  return (
+    `${window.location.origin}${basePath}validar-ticket.html` +
+    `?numero=${encodeURIComponent(numero)}`
+  );
+}
+
 function generarQr(numero) {
   const contenedor = document.getElementById('qr-code');
   contenedor.innerHTML = '';
 
-  const rutaActual = window.location.pathname;
-  const basePath = rutaActual.substring(0, rutaActual.lastIndexOf('/') + 1);
+  const urlTicket = construirUrlValidacion(numero);
 
-  const urlTicket =
-    `${window.location.origin}${basePath}validar-ticket.html` +
-    `?numero=${encodeURIComponent(numero)}`;
+  const linkValidacion = document.getElementById('btn-open-validation');
+  if (linkValidacion) {
+    linkValidacion.href = urlTicket;
+  }
 
   if (typeof QRCode !== 'function') {
     contenedor.innerHTML = '<small>No se pudo cargar el QR.</small>';
@@ -51,9 +61,9 @@ function generarQr(numero) {
 
   new QRCode(contenedor, {
     text: urlTicket,
-    width: 164,
-    height: 164,
-    correctLevel: QRCode.CorrectLevel.H,
+    width: 148,
+    height: 148,
+    correctLevel: QRCode.CorrectLevel.M,
   });
 }
 
@@ -117,11 +127,7 @@ function imprimirTicket() {
 function compartirPorWhatsApp() {
   if (!numeroTicket) return;
 
-  const rutaActual = window.location.pathname;
-  const basePath = rutaActual.substring(0, rutaActual.lastIndexOf('/') + 1);
-  const url =
-    `${window.location.origin}${basePath}validar-ticket.html` +
-    `?numero=${encodeURIComponent(numeroTicket)}`;
+  const url = construirUrlValidacion(numeroTicket);
 
   const mensaje =
     `🎟 Ticket Oficial - Deseo Un Premio\n\n` +
