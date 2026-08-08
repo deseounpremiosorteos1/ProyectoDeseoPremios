@@ -1,0 +1,179 @@
+/* ============================================================
+   DESEO UN PREMIO - FIX MODAL EDITAR / CREAR SORTEO
+   Scroll vertical + encabezado y botones siempre visibles
+   ============================================================ */
+
+/* El overlay sigue ocupando toda la pantalla */
+#modal-sorteo.modal-overlay,
+.modal-overlay#modal-sorteo {
+  padding: 16px !important;
+  overflow: hidden !important;
+  align-items: center !important;
+}
+
+/* El modal nunca supera la pantalla */
+#modal-sorteo .modal-card {
+  width: min(100%, 560px) !important;
+  max-width: 560px !important;
+
+  height: auto !important;
+  max-height: calc(100dvh - 32px) !important;
+
+  display: flex !important;
+  flex-direction: column !important;
+
+  overflow: hidden !important;
+}
+
+/* Título fijo arriba */
+#modal-sorteo .modal-header {
+  flex: 0 0 auto !important;
+  position: relative !important;
+  z-index: 3 !important;
+
+  background: #ffffff !important;
+}
+
+/* SOLO esta parte hace scroll */
+#modal-sorteo .modal-body {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+
+  scrollbar-width: thin;
+  scrollbar-color: #9bbbad #eef5f0;
+}
+
+/* Scroll visible y limpio en Chrome/Edge */
+#modal-sorteo .modal-body::-webkit-scrollbar {
+  width: 9px;
+}
+
+#modal-sorteo .modal-body::-webkit-scrollbar-track {
+  background: #eef5f0;
+  border-radius: 999px;
+}
+
+#modal-sorteo .modal-body::-webkit-scrollbar-thumb {
+  background: #9bbbad;
+  border: 2px solid #eef5f0;
+  border-radius: 999px;
+}
+
+#modal-sorteo .modal-body::-webkit-scrollbar-thumb:hover {
+  background: #6e9986;
+}
+
+/* Cancelar / Guardar siempre quedan abajo */
+#modal-sorteo .modal-footer {
+  flex: 0 0 auto !important;
+  position: relative !important;
+  z-index: 3 !important;
+
+  background: #ffffff !important;
+  border-top: 1px solid #dce7df !important;
+
+  box-shadow: 0 -7px 20px rgba(0, 43, 22, 0.06);
+}
+
+/* Evita que el último premio quede pegado a los botones */
+#modal-sorteo #premios-lista {
+  padding-bottom: 4px;
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+  #modal-sorteo.modal-overlay,
+  .modal-overlay#modal-sorteo {
+    padding: 12px !important;
+  }
+
+  #modal-sorteo .modal-card {
+    width: min(100%, 560px) !important;
+    max-height: calc(100dvh - 24px) !important;
+  }
+}
+
+/* Celular */
+@media (max-width: 600px) {
+  #modal-sorteo.modal-overlay,
+  .modal-overlay#modal-sorteo {
+    padding:
+      max(8px, env(safe-area-inset-top))
+      8px
+      max(8px, env(safe-area-inset-bottom)) !important;
+  }
+
+  #modal-sorteo .modal-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height:
+      calc(
+        100dvh
+        - max(8px, env(safe-area-inset-top))
+        - max(8px, env(safe-area-inset-bottom))
+      ) !important;
+
+    border-radius: 16px !important;
+  }
+
+  #modal-sorteo .modal-header {
+    padding: 14px 16px !important;
+  }
+
+  #modal-sorteo .modal-body {
+    padding: 16px !important;
+  }
+
+  #modal-sorteo .modal-footer {
+    padding:
+      12px
+      16px
+      max(12px, env(safe-area-inset-bottom)) !important;
+
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+  }
+
+  #modal-sorteo .modal-footer button {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  /* Fecha + hora pasan a una sola columna si la pantalla es angosta */
+  #modal-sorteo .field-group > div[style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Pantallas muy bajas: aprovecha casi toda la altura */
+@media (max-height: 700px) and (min-width: 601px) {
+  #modal-sorteo.modal-overlay,
+  .modal-overlay#modal-sorteo {
+    padding: 8px !important;
+  }
+
+  #modal-sorteo .modal-card {
+    max-height: calc(100dvh - 16px) !important;
+  }
+
+  #modal-sorteo .modal-header {
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+  }
+
+  #modal-sorteo .modal-body {
+    padding-top: 14px !important;
+    padding-bottom: 14px !important;
+  }
+
+  #modal-sorteo .field-group {
+    margin-bottom: 12px !important;
+  }
+}
