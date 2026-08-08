@@ -349,75 +349,18 @@ app.post('/api/admin/login', async (req, res) => {
   }
 });
 
-function calcularEstadoSorteo(sorteo, ahora = new Date()) {
-  // "cerrado" sigue siendo la pausa manual de emergencia.
-  if (sorteo.estado === 'cerrado') {
-    return 'pausado';
-  }
-
-  const inicio = sorteo.fecha_inicio_ventas
-    ? new Date(sorteo.fecha_inicio_ventas)
-    : null;
-
-  const cierre = sorteo.fecha_cierre_ventas
-    ? new Date(sorteo.fecha_cierre_ventas)
-    : null;
-
-  const fechaSorteo = sorteo.fecha_sorteo
-    ? new Date(sorteo.fecha_sorteo)
-    : null;
-
-  if (inicio && ahora < inicio) {
-    return 'programado';
-  }
-
-  if (cierre && ahora >= cierre) {
-    if (fechaSorteo && ahora >= fechaSorteo) {
-      return 'listo_sorteo';
-    }
-
-    return 'ventas_cerradas';
-  }
-
-  return 'activo';
-}
-
-function serializarSorteo(sorteo) {
-  return {
-    ...sorteo,
-
-    // Conservamos el estado guardado para el botón Pausar/Reactivar.
-    estado_manual: sorteo.estado,
-
-    // "estado" es lo que verá frontend/admin y se calcula por fecha.
-    estado: calcularEstadoSorteo(sorteo),
-  };
-}
 
 app.get('/api/sorteos', async (req, res) => {
   const { estado } = req.query;
 
   try {
-    const resultado = await pool.query(
-      `SELECT *
-       FROM sorteos
-       ORDER BY fecha_sorteo ASC`
-    );
-
-    let sorteos = resultado.rows.map(serializarSorteo);
+    const parametros = [];
+    let where = '';
 
     if (estado && estado !== 'todos') {
-      sorteos = sorteos.filter((s) => s.estado === estado);
+      parametros.push(estado);
+      where = 'WHERE estado = $1';
     }
-
-    return res.json(sorteos);
-  } catch (error) {
-    console.error('Error al consultar sorteos:', error);
-    return res.status(500).json({
-      error: 'Error al consultar sorteos',
-    });
-  }
-});
 
     const resultado = await pool.query(
       `SELECT * FROM sorteos ${where} ORDER BY fecha_sorteo ASC`,
@@ -432,124 +375,49 @@ app.get('/api/sorteos', async (req, res) => {
 });
 
 app.post('/api/sorteos', requiereAdmin, async (req, res) => {
-  const {
-    nombre,
-    premio,
-    fecha_inicio_ventas,
-    fecha_cierre_ventas,
-    fecha_sorteo,
-    precio_ticket,
-    premios,
-  } = req.body;
-
+  const { nombre, premio, fecha_sorteo, precio_ticket, premios } = req.body;
   const listaPremios = normalizarPremios(premios, premio);
 
-  if (
-    !nombre ||
-    !fecha_inicio_ventas ||
-    !fecha_cierre_ventas ||
-    !fecha_sorteo
-  ) {
-    return res.status(400).json({
-      error:
-        'Nombre, inicio de ventas, cierre de ventas y fecha del sorteo son obligatorios',
-    });
-  }
-
-  const inicio = new Date(fecha_inicio_ventas);
-  const cierre = new Date(fecha_cierre_ventas);
-  const sorteo = new Date(fecha_sorteo);
-
-  if (!(inicio < cierre && cierre < sorteo)) {
-    return res.status(400).json({
-      error:
-        'Las fechas deben cumplir: inicio de ventas < cierre de ventas < fecha del sorteo',
-    });
+  if (!nombre || !fecha_sorteo) {
+    return res.status(400).json({ error: 'Nombre y fecha son obligatorios' });
   }
 
   if (listaPremios.length < 1 || listaPremios.length > 10) {
-    return res.status(400).json({
-      error: 'Debes registrar entre 1 y 10 premios',
-    });
+    return res.status(400).json({ error: 'Debes registrar entre 1 y 10 premios' });
   }
 
   try {
     const resultado = await pool.query(
       `INSERT INTO sorteos
-       (
-         nombre,
-         premio,
-         fecha_inicio_ventas,
-         fecha_cierre_ventas,
-         fecha_sorteo,
-         precio_ticket,
-         premios
-       )
-       VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb)
+       (nombre, premio, fecha_sorteo, precio_ticket, premios)
+       VALUES ($1, $2, $3, $4, $5::jsonb)
        RETURNING *`,
       [
         String(nombre).trim(),
         listaPremios[0],
-        fecha_inicio_ventas,
-        fecha_cierre_ventas,
         fecha_sorteo,
         Number(precio_ticket || 60),
         JSON.stringify(listaPremios),
       ]
     );
 
-    return res.status(201).json(
-      serializarSorteo(resultado.rows[0])
-    );
+    return res.status(201).json(resultado.rows[0]);
   } catch (error) {
     console.error('Error al crear sorteo:', error);
-    return res.status(500).json({
-      error: 'Error al crear el sorteo',
-    });
+    return res.status(500).json({ error: 'Error al crear el sorteo' });
   }
 });
 
-
 app.patch('/api/sorteos/:id', requiereAdmin, async (req, res) => {
-  const {
-    nombre,
-    premio,
-    fecha_inicio_ventas,
-    fecha_cierre_ventas,
-    fecha_sorteo,
-    precio_ticket,
-    premios,
-  } = req.body;
-
+  const { nombre, premio, fecha_sorteo, precio_ticket, premios } = req.body;
   const listaPremios = normalizarPremios(premios, premio);
 
-  if (
-    !nombre ||
-    !fecha_inicio_ventas ||
-    !fecha_cierre_ventas ||
-    !fecha_sorteo
-  ) {
-    return res.status(400).json({
-      error:
-        'Nombre, inicio de ventas, cierre de ventas y fecha del sorteo son obligatorios',
-    });
-  }
-
-  const inicio = new Date(fecha_inicio_ventas);
-  const cierre = new Date(fecha_cierre_ventas);
-  const sorteo = new Date(fecha_sorteo);
-
-  if (!(inicio < cierre && cierre < sorteo)) {
-    return res.status(400).json({
-      error:
-        'Las fechas deben cumplir: inicio de ventas < cierre de ventas < fecha del sorteo',
-    });
+  if (!nombre || !fecha_sorteo) {
+    return res.status(400).json({ error: 'Nombre y fecha son obligatorios' });
   }
 
   if (listaPremios.length < 1 || listaPremios.length > 10) {
-    return res.status(400).json({
-      error: 'Debes registrar entre 1 y 10 premios',
-    });
+    return res.status(400).json({ error: 'Debes registrar entre 1 y 10 premios' });
   }
 
   try {
@@ -557,18 +425,14 @@ app.patch('/api/sorteos/:id', requiereAdmin, async (req, res) => {
       `UPDATE sorteos
        SET nombre = $1,
            premio = $2,
-           fecha_inicio_ventas = $3,
-           fecha_cierre_ventas = $4,
-           fecha_sorteo = $5,
-           precio_ticket = $6,
-           premios = $7::jsonb
-       WHERE id = $8
+           fecha_sorteo = $3,
+           precio_ticket = $4,
+           premios = $5::jsonb
+       WHERE id = $6
        RETURNING *`,
       [
         String(nombre).trim(),
         listaPremios[0],
-        fecha_inicio_ventas,
-        fecha_cierre_ventas,
         fecha_sorteo,
         Number(precio_ticket || 60),
         JSON.stringify(listaPremios),
@@ -577,22 +441,15 @@ app.patch('/api/sorteos/:id', requiereAdmin, async (req, res) => {
     );
 
     if (!resultado.rows[0]) {
-      return res.status(404).json({
-        error: 'Sorteo no encontrado',
-      });
+      return res.status(404).json({ error: 'Sorteo no encontrado' });
     }
 
-    return res.json(
-      serializarSorteo(resultado.rows[0])
-    );
+    return res.json(resultado.rows[0]);
   } catch (error) {
     console.error('Error al editar sorteo:', error);
-    return res.status(500).json({
-      error: 'Error al editar el sorteo',
-    });
+    return res.status(500).json({ error: 'Error al editar el sorteo' });
   }
 });
-
 
 app.patch('/api/sorteos/:id/estado', requiereAdmin, async (req, res) => {
   const { estado } = req.body;
@@ -933,21 +790,9 @@ app.post('/api/comprobantes', upload.single('archivo'), async (req, res) => {
       return res.status(404).json({ error: 'Sorteo no encontrado' });
     }
 
-    const estadoAutomatico = calcularEstadoSorteo(sorteo);
-
-    if (estadoAutomatico !== 'activo') {
+    if (sorteo.estado !== 'activo') {
       await cliente.query('ROLLBACK');
-
-      const mensajes = {
-        programado: 'Las ventas de este sorteo todavía no han comenzado',
-        ventas_cerradas: 'Las ventas de este sorteo ya finalizaron',
-        listo_sorteo: 'El período de ventas terminó y el sorteo ya está listo para realizarse',
-        pausado: 'Las ventas de este sorteo están pausadas temporalmente',
-      };
-
-      return res.status(400).json({
-        error: mensajes[estadoAutomatico] || 'El sorteo no está disponible',
-      });
+      return res.status(400).json({ error: 'El sorteo no está activo' });
     }
 
 
