@@ -303,12 +303,30 @@
           <input type="text" id="s-nombre" class="login-input" placeholder="Ej: Sorteo de Vehículos"/>
         </div>
         <div class="field-group">
-          <label class="field-label">Fecha del sorteo</label>
-          <input type="date" id="s-fecha" class="login-input"/>
+          <label class="field-label">Fecha de inicio de ventas</label>
+          <div style="display:grid;grid-template-columns:1fr 140px;gap:8px">
+            <input type="date" id="s-inicio-fecha" class="login-input"/>
+            <input type="time" id="s-inicio-hora" class="login-input" value="08:00"/>
+          </div>
         </div>
+
         <div class="field-group">
-          <label class="field-label">Hora</label>
-          <input type="time" id="s-hora" class="login-input" value="16:00"/>
+          <label class="field-label">Fecha de cierre de ventas</label>
+          <div style="display:grid;grid-template-columns:1fr 140px;gap:8px">
+            <input type="date" id="s-cierre-fecha" class="login-input"/>
+            <input type="time" id="s-cierre-hora" class="login-input" value="22:00"/>
+          </div>
+          <small style="display:block;margin-top:5px;color:#64748B">
+            Al llegar esta fecha, el sistema dejará de aceptar nuevas compras automáticamente.
+          </small>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Fecha y hora del sorteo</label>
+          <div style="display:grid;grid-template-columns:1fr 140px;gap:8px">
+            <input type="date" id="s-fecha" class="login-input"/>
+            <input type="time" id="s-hora" class="login-input" value="16:00"/>
+          </div>
         </div>
         <div class="field-group">
           <label class="field-label">Precio por ticket (S/.)</label>

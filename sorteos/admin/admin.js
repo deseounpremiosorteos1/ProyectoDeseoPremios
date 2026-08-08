@@ -454,6 +454,35 @@ function filtrarParticipantes() {
 // ══════════════════════════════════════════════════════════════
 // SORTEOS
 // ══════════════════════════════════════════════════════════════
+function estadoSorteoUI(s) {
+  const estado = s.estado || 'activo';
+
+  const mapa = {
+    programado:      { texto: '🟡 Programado', color: '#854D0E', fondo: '#FEF3C7' },
+    activo:          { texto: '🟢 Ventas abiertas', color: '#166534', fondo: '#DCFCE7' },
+    ventas_cerradas: { texto: '🟠 Ventas cerradas', color: '#9A3412', fondo: '#FFEDD5' },
+    listo_sorteo:    { texto: '🎉 Listo para sortear', color: '#5B21B6', fondo: '#EDE9FE' },
+    pausado:         { texto: '⏸️ Pausado manualmente', color: '#991B1B', fondo: '#FEE2E2' },
+    cerrado:         { texto: '⏸️ Pausado manualmente', color: '#991B1B', fondo: '#FEE2E2' },
+  };
+
+  return mapa[estado] || mapa.activo;
+}
+
+function fmtFechaHoraAdmin(valor) {
+  if (!valor) return '—';
+  const d = new Date(valor);
+  if (Number.isNaN(d.getTime())) return '—';
+
+  return d.toLocaleString('es-PE', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
 function renderSorteos() {
   const grid = document.getElementById('sorteos-grid');
   if (!grid) return;
@@ -464,36 +493,94 @@ function renderSorteos() {
   }
 
   grid.innerHTML = sorteosCache.map(s => {
-    const comps     = comprobantesCache.filter(c => c.sorteo_id === s.id);
-    const aprobados = comps.filter(c => c.estado === 'aprobado');
-    const pendientes= comps.filter(c => c.estado === 'pendiente');
-    const tickets   = aprobados.reduce((sum, c) => sum + c.cantidad, 0);
-    const recaudado = aprobados.reduce((sum, c) => sum + Number(c.monto), 0);
-    const fecha     = new Date(s.fecha_sorteo);
-    const fechaStr  = fecha.toLocaleDateString('es-PE', { day: '2-digit', month: '2-digit', year: 'numeric' });
-    const horaStr   = fecha.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' });
-    const premios   = Array.isArray(s.premios) && s.premios.length ? s.premios : (s.premio ? [s.premio] : []);
+    const comps      = comprobantesCache.filter(c => String(c.sorteo_id) === String(s.id));
+    const aprobados  = comps.filter(c => c.estado === 'aprobado');
+    const pendientes = comps.filter(c => c.estado === 'pendiente');
+
+    // Los tickets son ILIMITADOS: aquí solo mostramos cuántos se vendieron.
+    const tickets    = aprobados.reduce((sum, c) => sum + Number(c.cantidad || 0), 0);
+    const recaudado  = aprobados.reduce((sum, c) => sum + Number(c.monto || 0), 0);
+
+    const premios = Array.isArray(s.premios) && s.premios.length
+      ? s.premios
+      : (s.premio ? [s.premio] : []);
+
     const premioTxt = premios.length > 1
       ? `${escaparHtmlAttr(premios[0])} <span style="color:#94A3B8">(+${premios.length - 1} más)</span>`
       : escaparHtmlAttr(premios[0] || '—');
-    const desactivado = s.estado === 'cerrado';
+
+    const estadoUI = estadoSorteoUI(s);
+    const pausadoManual = (s.estado_manual || s.estado) === 'cerrado';
+
     return `
-      <div class="sorteo-admin-card${desactivado ? ' desactivado' : ''}">
+      <div class="sorteo-admin-card${pausadoManual ? ' desactivado' : ''}">
         <div class="sorteo-admin-header">
-          <div class="sorteo-admin-nombre">${s.nombre} ${desactivado ? '<span style="font-size:11px;opacity:.7">(desactivado)</span>' : ''}</div>
-          <div class="sorteo-admin-fecha">📅 ${fechaStr} · ${horaStr}</div>
+          <div class="sorteo-admin-nombre">${escaparHtmlAttr(s.nombre)}</div>
+          <div class="sorteo-admin-fecha">🎉 ${fmtFechaHoraAdmin(s.fecha_sorteo)}</div>
         </div>
+
         <div class="sorteo-admin-body">
-          <div class="sorteo-stat-row"><span>Premio${premios.length > 1 ? 's' : ''}</span><strong>${premioTxt}</strong></div>
-          <div class="sorteo-stat-row"><span>Precio ticket</span><strong>S/ ${s.precio_ticket}</strong></div>
-          <div class="sorteo-stat-row"><span>Tickets vendidos</span><strong>${tickets}</strong></div>
-          <div class="sorteo-stat-row"><span>Pendientes</span><strong style="color:#854D0E">${pendientes.length}</strong></div>
-          <div class="sorteo-stat-row"><span>Recaudado</span><strong style="color:#166534">S/ ${recaudado.toLocaleString()}</strong></div>
+          <div style="margin-bottom:10px">
+            <span style="
+              display:inline-block;
+              padding:5px 9px;
+              border-radius:999px;
+              font-size:11px;
+              font-weight:800;
+              color:${estadoUI.color};
+              background:${estadoUI.fondo}">
+              ${estadoUI.texto}
+            </span>
+          </div>
+
+          <div class="sorteo-stat-row">
+            <span>Premio${premios.length > 1 ? 's' : ''}</span>
+            <strong>${premioTxt}</strong>
+          </div>
+
+          <div class="sorteo-stat-row">
+            <span>Inicio ventas</span>
+            <strong>${fmtFechaHoraAdmin(s.fecha_inicio_ventas)}</strong>
+          </div>
+
+          <div class="sorteo-stat-row">
+            <span>Cierre ventas</span>
+            <strong>${fmtFechaHoraAdmin(s.fecha_cierre_ventas)}</strong>
+          </div>
+
+          <div class="sorteo-stat-row">
+            <span>Fecha sorteo</span>
+            <strong>${fmtFechaHoraAdmin(s.fecha_sorteo)}</strong>
+          </div>
+
+          <div class="sorteo-stat-row">
+            <span>Precio ticket</span>
+            <strong>S/ ${Number(s.precio_ticket || 0).toFixed(2)}</strong>
+          </div>
+
+          <div class="sorteo-stat-row">
+            <span>Tickets vendidos</span>
+            <strong>${tickets.toLocaleString('es-PE')}</strong>
+          </div>
+
+          <div class="sorteo-stat-row">
+            <span>Pendientes</span>
+            <strong style="color:#854D0E">${pendientes.length}</strong>
+          </div>
+
+          <div class="sorteo-stat-row">
+            <span>Recaudado</span>
+            <strong style="color:#166534">S/ ${recaudado.toLocaleString('es-PE')}</strong>
+          </div>
         </div>
-        <div class="sorteo-admin-footer" style="padding:0 20px 16px;display:flex;gap:8px">
+
+        <div class="sorteo-admin-footer" style="padding:0 20px 16px;display:flex;gap:8px;flex-wrap:wrap">
           <button class="btn-secondary" onclick="abrirModalSorteo('${s.id}')">✏️ Editar</button>
-          <button class="btn-secondary" onclick="toggleEstadoSorteo('${s.id}', '${desactivado ? 'activo' : 'cerrado'}')">
-            ${desactivado ? '✅ Activar' : '🚫 Desactivar'}
+
+          <button
+            class="btn-secondary"
+            onclick="toggleEstadoSorteo('${s.id}', '${pausadoManual ? 'activo' : 'cerrado'}')">
+            ${pausadoManual ? '✅ Reactivar' : '⏸️ Pausar ventas'}
           </button>
         </div>
       </div>
@@ -501,9 +588,8 @@ function renderSorteos() {
   }).join('');
 }
 
-// Activar/desactivar un sorteo (reutiliza la columna "estado" que ya
-// existía: 'activo' lo muestra en el sitio público, 'cerrado' lo oculta
-// de ahí pero lo deja visible -y atenuado- aquí en el panel).
+// El botón manual queda como emergencia.
+// El cierre normal ocurre solo por fecha_cierre_ventas.
 async function toggleEstadoSorteo(id, nuevoEstado) {
   try {
     const res = await fetch(`${API_BASE}/sorteos/${id}/estado`, {
@@ -511,15 +597,22 @@ async function toggleEstadoSorteo(id, nuevoEstado) {
       headers: { 'Content-Type': 'application/json', ...authHeaders() },
       body: JSON.stringify({ estado: nuevoEstado }),
     });
+
     if (!res.ok) {
       const data = await res.json().catch(() => ({}));
       throw new Error(data.error || `La API respondió ${res.status}`);
     }
+
     await fetchSorteos();
     renderSorteos();
     poblarSelectSorteoCompradores();
     renderEstadisticas();
-    toast(nuevoEstado === 'activo' ? '✅ Sorteo activado' : '🚫 Sorteo desactivado');
+
+    toast(
+      nuevoEstado === 'activo'
+        ? '✅ Sorteo reactivado. Las fechas vuelven a controlar las ventas.'
+        : '⏸️ Ventas pausadas manualmente'
+    );
   } catch (err) {
     console.error('Error al cambiar estado del sorteo:', err);
     toast('❌ No se pudo cambiar el estado del sorteo');
@@ -577,6 +670,18 @@ function quitarCampoPremio(btn) {
 // sorteoEditandoId: null = creando uno nuevo, string = editando ese id
 let sorteoEditandoId = null;
 
+function aInputFechaHora(valor) {
+  if (!valor) return { fecha: '', hora: '' };
+  const d = new Date(valor);
+  if (Number.isNaN(d.getTime())) return { fecha: '', hora: '' };
+
+  const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+  return {
+    fecha: local.toISOString().slice(0, 10),
+    hora: local.toISOString().slice(11, 16),
+  };
+}
+
 function abrirModalSorteo(id) {
   sorteoEditandoId = id || null;
   const titulo = document.getElementById('modal-sorteo-titulo');
@@ -584,63 +689,131 @@ function abrirModalSorteo(id) {
 
   if (sorteoEditandoId) {
     const s = sorteosCache.find(x => String(x.id) === String(sorteoEditandoId));
-    if (!s) { toast('⚠️ No encontré ese sorteo'); return; }
+    if (!s) {
+      toast('⚠️ No encontré ese sorteo');
+      return;
+    }
 
     document.getElementById('s-nombre').value = s.nombre || '';
-    const fecha = new Date(s.fecha_sorteo);
-    document.getElementById('s-fecha').value = fecha.toISOString().slice(0, 10);
-    document.getElementById('s-hora').value  = fecha.toISOString().slice(11, 16);
+
+    const inicio = aInputFechaHora(s.fecha_inicio_ventas);
+    const cierre = aInputFechaHora(s.fecha_cierre_ventas);
+    const sorteo = aInputFechaHora(s.fecha_sorteo);
+
+    document.getElementById('s-inicio-fecha').value = inicio.fecha;
+    document.getElementById('s-inicio-hora').value  = inicio.hora || '08:00';
+
+    document.getElementById('s-cierre-fecha').value = cierre.fecha;
+    document.getElementById('s-cierre-hora').value  = cierre.hora || '22:00';
+
+    document.getElementById('s-fecha').value = sorteo.fecha;
+    document.getElementById('s-hora').value  = sorteo.hora || '16:00';
+
     document.getElementById('s-precio').value = s.precio_ticket || '';
 
-    const premios = Array.isArray(s.premios) && s.premios.length ? s.premios : (s.premio ? [s.premio] : ['']);
+    const premios = Array.isArray(s.premios) && s.premios.length
+      ? s.premios
+      : (s.premio ? [s.premio] : ['']);
+
     renderPremiosLista(premios);
 
     if (titulo) titulo.textContent = 'Editar Sorteo';
     if (btnGuardar) btnGuardar.textContent = 'Guardar cambios';
   } else {
     document.getElementById('s-nombre').value = '';
-    document.getElementById('s-fecha').value  = '';
+    document.getElementById('s-inicio-fecha').value = '';
+    document.getElementById('s-inicio-hora').value = '08:00';
+    document.getElementById('s-cierre-fecha').value = '';
+    document.getElementById('s-cierre-hora').value = '22:00';
+    document.getElementById('s-fecha').value = '';
+    document.getElementById('s-hora').value = '16:00';
     document.getElementById('s-precio').value = '';
+
     renderPremiosLista(['']);
 
     if (titulo) titulo.textContent = 'Nuevo Sorteo';
     if (btnGuardar) btnGuardar.textContent = 'Crear sorteo';
   }
+
   abrirModal('modal-sorteo');
 }
 
 async function guardarSorteo() {
   const nombre = document.getElementById('s-nombre').value.trim();
-  const fecha  = document.getElementById('s-fecha').value;
-  const hora   = document.getElementById('s-hora').value || '16:00';
+
+  const inicioFecha = document.getElementById('s-inicio-fecha').value;
+  const inicioHora  = document.getElementById('s-inicio-hora').value || '08:00';
+
+  const cierreFecha = document.getElementById('s-cierre-fecha').value;
+  const cierreHora  = document.getElementById('s-cierre-hora').value || '22:00';
+
+  const fechaSorteo = document.getElementById('s-fecha').value;
+  const horaSorteo  = document.getElementById('s-hora').value || '16:00';
+
   const precio = parseFloat(document.getElementById('s-precio').value);
+
   const premios = [...document.querySelectorAll('#premios-lista .premio-input')]
     .map(i => i.value.trim())
     .filter(Boolean);
 
-  if (!nombre || !fecha || !precio) {
-    toast('⚠️ Completa nombre, fecha y precio'); return;
+  if (!nombre || !inicioFecha || !cierreFecha || !fechaSorteo || !precio) {
+    toast('⚠️ Completa nombre, inicio de ventas, cierre de ventas, fecha del sorteo y precio');
+    return;
   }
+
+  const fechaInicioVentas = `${inicioFecha}T${inicioHora}:00`;
+  const fechaCierreVentas = `${cierreFecha}T${cierreHora}:00`;
+  const fechaSorteoCompleta = `${fechaSorteo}T${horaSorteo}:00`;
+
+  const inicio = new Date(fechaInicioVentas);
+  const cierre = new Date(fechaCierreVentas);
+  const sorteo = new Date(fechaSorteoCompleta);
+
+  if (!(inicio < cierre)) {
+    toast('⚠️ El cierre de ventas debe ser posterior al inicio');
+    return;
+  }
+
+  if (!(cierre < sorteo)) {
+    toast('⚠️ La fecha del sorteo debe ser posterior al cierre de ventas');
+    return;
+  }
+
   if (premios.length === 0) {
-    toast('⚠️ Agrega al menos 1 premio'); return;
+    toast('⚠️ Agrega al menos 1 premio');
+    return;
   }
+
   if (premios.length > 10) {
-    toast('⚠️ Máximo 10 premios por sorteo'); return;
+    toast('⚠️ Máximo 10 premios por sorteo');
+    return;
   }
 
   const editando = !!sorteoEditandoId;
   const btn = document.getElementById('btn-guardar-sorteo');
-  if (btn) { btn.disabled = true; btn.textContent = 'Guardando…'; }
+
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = 'Guardando…';
+  }
 
   try {
-    const url = editando ? `${API_BASE}/sorteos/${sorteoEditandoId}` : `${API_BASE}/sorteos`;
+    const url = editando
+      ? `${API_BASE}/sorteos/${sorteoEditandoId}`
+      : `${API_BASE}/sorteos`;
+
     const res = await fetch(url, {
       method: editando ? 'PATCH' : 'POST',
       headers: { 'Content-Type': 'application/json', ...authHeaders() },
       body: JSON.stringify({
         nombre,
         premios,
-        fecha_sorteo: `${fecha}T${hora}:00`,
+
+        // Tickets ilimitados: no enviamos ninguna capacidad máxima.
+        fecha_inicio_ventas: fechaInicioVentas,
+        fecha_cierre_ventas: fechaCierreVentas,
+        fecha_sorteo: fechaSorteoCompleta,
+
         precio_ticket: precio,
       }),
     });
@@ -652,17 +825,27 @@ async function guardarSorteo() {
 
     await fetchSorteos();
     cerrarModal('modal-sorteo');
+
     renderSorteos();
     poblarSelectSorteoCompradores();
     renderCompradores();
     renderEstadisticas();
-    toast(editando ? `✏️ Sorteo "${nombre}" actualizado` : `🎰 Sorteo "${nombre}" creado y guardado en la base de datos`);
+
+    toast(
+      editando
+        ? `✏️ Sorteo "${nombre}" actualizado`
+        : `🎰 Sorteo "${nombre}" creado con cierre automático de ventas`
+    );
+
     sorteoEditandoId = null;
   } catch (err) {
     console.error('Error al guardar el sorteo:', err);
-    toast('❌ No se pudo guardar el sorteo. Revisa que la API esté corriendo.');
+    toast(`❌ ${err.message || 'No se pudo guardar el sorteo'}`);
   } finally {
-    if (btn) { btn.disabled = false; btn.textContent = editando ? 'Guardar cambios' : 'Crear sorteo'; }
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = editando ? 'Guardar cambios' : 'Crear sorteo';
+    }
   }
 }
 

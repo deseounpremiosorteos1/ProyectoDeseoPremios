@@ -177,43 +177,119 @@ function etiquetaPremio(i) {
   return `${emoji} ${ordinal} Premio:`;
 }
 
+function textoCountdownCierre(fechaCierre) {
+  if (!fechaCierre) return '';
+
+  const ms = new Date(fechaCierre).getTime() - Date.now();
+
+  if (ms <= 0) return 'Ventas cerradas';
+
+  const totalMin = Math.floor(ms / 60000);
+  const dias = Math.floor(totalMin / 1440);
+  const horas = Math.floor((totalMin % 1440) / 60);
+  const minutos = totalMin % 60;
+
+  if (dias > 0) return `Cierra en ${dias}d ${horas}h`;
+  if (horas > 0) return `Cierra en ${horas}h ${minutos}m`;
+
+  return `Cierra en ${Math.max(1, minutos)} min`;
+}
+
+function actualizarCountdownsVentas() {
+  document.querySelectorAll('[data-cierre-ventas]').forEach(el => {
+    const cierre = el.dataset.cierreVentas;
+    const texto = textoCountdownCierre(cierre);
+    if (texto) el.textContent = `⏳ ${texto}`;
+
+    if (cierre && new Date(cierre).getTime() <= Date.now()) {
+      const card = el.closest('.sorteo-card');
+      const btn = card?.querySelector('.btn-participar');
+
+      if (btn) {
+        btn.textContent = 'Ventas cerradas';
+        btn.style.pointerEvents = 'none';
+        btn.style.opacity = '.65';
+      }
+    }
+  });
+}
+
 function renderSorteoCardPublico(s, destacado) {
   const fecha = new Date(s.fecha_sorteo);
-  const fechaStr = fecha.toLocaleDateString('es-PE', { day: 'numeric', month: 'long' });
-  const horaStr  = fecha.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' });
-  const precio   = Math.round(Number(s.precio_ticket));
-  const premios  = Array.isArray(s.premios) && s.premios.length ? s.premios : [s.premio];
+  const fechaStr = fecha.toLocaleDateString('es-PE', {
+    day: 'numeric',
+    month: 'long'
+  });
+
+  const horaStr = fecha.toLocaleTimeString('es-PE', {
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+
+  const precio = Math.round(Number(s.precio_ticket));
+
+  const premios = Array.isArray(s.premios) && s.premios.length
+    ? s.premios
+    : [s.premio];
+
   const premioId = `premios-pub-${s.id}`;
+
+  const cierreStr = s.fecha_cierre_ventas
+    ? new Date(s.fecha_cierre_ventas).toLocaleString('es-PE', {
+        day: 'numeric',
+        month: 'long',
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+    : '';
 
   const premiosHtml = premios.length > 1 ? `
     <div class="premios-toggle" onclick="togglePremios('${premioId}')">
       Ver premios (${premios.length}) <span class="toggle-arrow">▼</span>
     </div>
+
     <div class="premios-list" id="${premioId}">
-      ${premios.map((p, i) => `<div class="premio-item">${etiquetaPremio(i)} ${escapeHtml(p)}</div>`).join('')}
+      ${premios.map((p, i) =>
+        `<div class="premio-item">${etiquetaPremio(i)} ${escapeHtml(p)}</div>`
+      ).join('')}
     </div>
   ` : '';
 
   return `
     <div class="sorteo-card${destacado ? ' featured' : ''}">
       ${destacado ? '<div class="card-badge">🔥 MÁS POPULAR</div>' : ''}
+
       <div class="card-header">
         <div>
           <h2 class="card-title">${escapeHtml(s.nombre)}</h2>
           <p class="card-desc">🏆 Premio: ${escapeHtml(premios[0])}</p>
         </div>
+
         <div class="card-price${destacado ? '' : ' green'}">
           <span class="currency">S/</span>
           <span class="amount">${precio}</span>
           <span class="per-ticket">por ticket</span>
         </div>
       </div>
+
       <div class="card-meta">
-        <span class="meta-item">📅 ${fechaStr}</span>
+        ${cierreStr ? `
+          <span
+            class="meta-item"
+            data-cierre-ventas="${escapeHtml(s.fecha_cierre_ventas)}">
+            ⏳ ${textoCountdownCierre(s.fecha_cierre_ventas)}
+          </span>
+        ` : ''}
+
+        <span class="meta-item">🎉 ${fechaStr}</span>
         <span class="meta-item">⏰ ${horaStr}</span>
       </div>
+
       ${premiosHtml}
-      <a href="participar?sorteo=${s.id}" class="btn-participar">Participar →</a>
+
+      <a href="participar?sorteo=${s.id}" class="btn-participar">
+        Participar →
+      </a>
     </div>
   `;
 }
@@ -247,6 +323,7 @@ if (!apiBase) {
 
     sorteosCarrusel = sorteos;
     grid.innerHTML = sorteos.map((s, i) => renderSorteoCardPublico(s, i === 0)).join('');
+    actualizarCountdownsVentas();
     carruselIndex = 0;
     renderCarrusel();
     actualizarCountdownProximoSorteo(sorteos);
@@ -353,3 +430,7 @@ window.addEventListener('resize', () => {
   clearTimeout(resizeTimeout);
   resizeTimeout = setTimeout(renderCarrusel, 150);
 });
+
+
+// Actualiza la cuenta regresiva sin recargar la página.
+setInterval(actualizarCountdownsVentas, 30000);
